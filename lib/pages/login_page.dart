@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:proyecto_auto/pages/home_page.dart';
 import 'package:proyecto_auto/pages/register_page.dart';
+import 'home_page.dart'; // Asegúrate de importar HomePage
 
 class LoginPage extends StatefulWidget {
   @override
@@ -20,11 +20,13 @@ class _LoginPageState extends State<LoginPage> {
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
-      // Navegar a la pantalla principal después de iniciar sesión
+      // Navegar a la página principal y pasar el usuario
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-            builder: (context) => HomePage(user: userCredential.user)),
+          builder: (context) =>
+              HomePage(user: userCredential.user), // Pasar el usuario aquí
+        ),
       );
     } on FirebaseAuthException catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
