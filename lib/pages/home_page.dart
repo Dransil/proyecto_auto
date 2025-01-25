@@ -1,66 +1,132 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:proyecto_auto/pages/dashboard_page.dart';
+import 'package:proyecto_auto/pages/graphs_page.dart';
 
-class HomePage extends StatefulWidget {
-  final User? user;
-
-  HomePage({required this.user});
-
-  @override
-  _HomePageState createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+class HomePage extends StatelessWidget {
+  const HomePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Bienvenido, ${widget.user?.email ?? "Usuario"}'),
+        title: const Text('Escáner OBD'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.settings),
+            onPressed: () {},
+          ),
+        ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: StreamBuilder<DocumentSnapshot>(
-          stream: _firestore
-              .collection('sensores')
-              .doc('datos_sensores_motor')
-              .snapshots(), // Sincronización en tiempo real
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: CircularProgressIndicator());
-            }
-
-            if (snapshot.hasError) {
-              return Center(child: Text('Error: ${snapshot.error}'));
-            }
-
-            if (!snapshot.hasData || !snapshot.data!.exists) {
-              return Center(child: Text('No se encontraron datos.'));
-            }
-
-            // Obtener los datos del documento
-            Map<String, dynamic> datosSensores =
-                snapshot.data!.data() as Map<String, dynamic>;
-
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          // Logo
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16.0),
+            child: Column(
               children: [
-                Text(
-                  'Datos Sensores Motor:',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                Image.asset(
+                  'assets/images/Chevrolet-logo.png',
+                  height: 150,
                 ),
-                SizedBox(height: 20),
-                ...datosSensores.entries.map((entry) {
-                  return Text(
-                    '${entry.key}: ${entry.value}',
-                    style: TextStyle(fontSize: 18),
-                  );
-                }).toList(),
+                const SizedBox(height: 8),
               ],
-            );
-          },
+            ),
+          ),
+          const SizedBox(height: 32),
+          // Botones principales
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: GridView(
+              shrinkWrap: true,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                mainAxisSpacing: 16,
+                crossAxisSpacing: 16,
+              ),
+              children: [
+                _HomeButton(
+                  icon: Icons.dashboard,
+                  label: 'Dashboard',
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => SpeedometerPage()),
+                    );
+                  },
+                ),
+                _HomeButton(
+                  icon: Icons.monitor_heart,
+                  label: 'Diagnostico',
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => RealTimeLineChart()),
+                    );
+                  },
+                ),
+                _HomeButton(
+                  icon: Icons.car_rental,
+                  label: 'Información del vehículo',
+                  onTap: () {},
+                ),
+                _HomeButton(
+                  icon: Icons.report,
+                  label: 'Reportes',
+                  onTap: () {},
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _HomeButton extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final VoidCallback onTap;
+  final Color iconColor;
+
+  const _HomeButton({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+    this.iconColor = Colors.black,
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.grey[200],
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
+              size: 36,
+              color: iconColor,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              label,
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
         ),
       ),
     );

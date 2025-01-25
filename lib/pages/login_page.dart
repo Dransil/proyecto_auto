@@ -15,17 +15,15 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> _login() async {
     try {
-      final UserCredential userCredential =
-          await _auth.signInWithEmailAndPassword(
+      await _auth.signInWithEmailAndPassword(
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
-      // Navegar a la página principal y pasar el usuario
+      // Navegar a la página principal sin pasar el usuario
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) =>
-              HomePage(user: userCredential.user), // Pasar el usuario aquí
+          builder: (context) => HomePage(), // No se pasa el usuario aquí
         ),
       );
     } on FirebaseAuthException catch (e) {
