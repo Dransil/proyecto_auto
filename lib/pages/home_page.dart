@@ -1,9 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:proyecto_auto/pages/dashboard_page.dart';
 import 'package:proyecto_auto/pages/graphs_page.dart';
+import 'package:proyecto_auto/pages/login_page.dart'; // Asegúrate de tener esta página creada
 
-class HomePage extends StatelessWidget {
-  const HomePage({Key? key}) : super(key: key);
+class HomePage extends StatefulWidget {
+  final dynamic user; // Recibe el parámetro user
+
+  const HomePage({Key? key, required this.user}) : super(key: key);
+
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  void _logout() {
+    // Aquí puedes agregar lógica adicional para cerrar sesión, como limpiar datos locales o tokens
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => LoginPage()),
+      (route) => false,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +30,14 @@ class HomePage extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.settings),
-            onPressed: () {},
+            onPressed: () {
+              // Aquí puedes manejar configuraciones relacionadas con el usuario
+              print("Configuraciones del usuario: \${widget.user}");
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: _logout, // Llama a la función de logout
           ),
         ],
       ),
@@ -70,12 +94,18 @@ class HomePage extends StatelessWidget {
                 _HomeButton(
                   icon: Icons.car_rental,
                   label: 'Información del vehículo',
-                  onTap: () {},
+                  onTap: () {
+                    // Puedes pasar el usuario si es necesario
+                    print("Información del usuario: \${widget.user}");
+                  },
                 ),
                 _HomeButton(
                   icon: Icons.report,
                   label: 'Reportes',
-                  onTap: () {},
+                  onTap: () {
+                    // Lógica para reportes
+                    print("Reportes del usuario: \${widget.user}");
+                  },
                 ),
               ],
             ),
