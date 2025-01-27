@@ -101,7 +101,7 @@ class _HomePageState extends State<HomePage> {
                 ),
                 _HomeButton(
                   icon: Icons.report,
-                  label: 'Reportessss',
+                  label: 'Reportes',
                   onTap: () {
                     // Lógica para reportes
                     print("Reportes del usuario: \${widget.user}");
