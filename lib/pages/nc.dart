@@ -1,342 +1,472 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 
-class SpeedometerPage extends StatefulWidget {
-  const SpeedometerPage({super.key});
+class MainMenuPage extends StatelessWidget {
+  const MainMenuPage({super.key});
 
   @override
-  State<SpeedometerPage> createState() => _SpeedometerPageState();
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text("Menú de Sensores")),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const SensoresMotor()),
+                );
+              },
+              child: const Text("Sensores del motor"),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const sensoresCombustible()),
+                );
+              },
+              child: const Text("Sensores del combustible"),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const sensoresOxigeno()),
+                );
+              },
+              child: const Text("Sensores de oxígeno"),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
 
-class _SpeedometerPageState extends State<SpeedometerPage> {
-  final ValueNotifier<double> _notifier = ValueNotifier(0.0);
-  late final Ticker _ticker;
-  bool isAccelerating = false;
-  String selectedMetric = "Speed"; // Métrica inicial seleccionada
+class SensoresMotor extends StatefulWidget {
+  const SensoresMotor({super.key});
 
   @override
-  void initState() {
-    super.initState();
-    _ticker = Ticker(updateSpeed);
-    _ticker.start();
-  }
+  State<SensoresMotor> createState() => _SensoresMotorState();
+}
 
-  void updateSpeed(Duration elapsed) {
-    setState(() {
-      if (isAccelerating) {
-        // gradual accelerating
-        _notifier.value = (_notifier.value + elapsed.inMilliseconds * 0.00003)
-            .clamp(0.0, 240);
-      } else {
-        // gradual declerating
-        _notifier.value = (_notifier.value - elapsed.inMilliseconds * 0.00001)
-            .clamp(0.0, 240);
-      }
-    });
-  }
+//Sensores del motor
+class _SensoresMotorState extends State<SensoresMotor> {
+  final DatabaseReference _sensorsRef =
+      FirebaseDatabase.instance.ref('/SensoresMotor');
+  String selectedMetricKey = "Vel vehículo";
 
-  void startAcceleration() {
-    setState(() {
-      isAccelerating = true;
-    });
-  }
+  final Map<String, String> metricLabels = {
+    "Carga del motor": "Carga del motor",
+    "Consumo instantáneo combustible": "Consumo instantáneo de combustible",
+    "Posición acelerador": "Posición del acelerador",
+    "Presión colector admisión": "Presión de colector de admisión",
+    "Presión combustible": "Presión de combustible",
+    "RPM": "RPM del motor",
+    "Sensor MAP": "Sensor MAP",
+    "Temperatura aceite": "Temperatura del aceite",
+    "Temperatura refrigerante": "Temperatura del refrigerante",
+    "Tiempo de encendido": "Tiempo de encendido",
+    "Vel vehículo": "Velocidad del vehículo",
+  };
 
-  void startDecleration() {
-    setState(() {
-      isAccelerating = false;
-    });
-  }
-
-  void applyBreak() {
-    setState(() {
-      isAccelerating = false;
-      // smooth braking
-      _notifier.value = (_notifier.value - 20).clamp(0.0, 240);
-    });
-  }
-
-  @override
-  void dispose() {
-    _ticker.dispose();
-    _notifier.dispose();
-    super.dispose();
-  }
-
-  Widget buildGauge() {
-    switch (selectedMetric) {
-      case 'RPM':
-        return buildRpmGauge();
-      case 'Fuel':
-        return buildFuelGauge();
-      case 'Temp':
-        return buildTempGauge();
-      case 'Battery':
-        return buildBatteryGauge();
-      default:
-        return buildSpeedGauge();
-    }
-  }
-
-  Widget buildSpeedGauge() {
-    return ValueListenableBuilder<double>(
-      valueListenable: _notifier,
-      builder: (context, speed, child) {
-        return SfRadialGauge(
-          axes: <RadialAxis>[
-            RadialAxis(
-              startAngle: 140,
-              endAngle: 40,
-              minimum: 0,
-              maximum: 240,
-              radiusFactor: 0.9,
-              majorTickStyle: const MajorTickStyle(
-                length: 12,
-                thickness: 2,
-                color: Colors.black,
-              ),
-              minorTicksPerInterval: 4,
-              minorTickStyle: const MinorTickStyle(
-                length: 6,
-                thickness: 1,
-                color: Colors.grey,
-              ),
-              axisLineStyle: const AxisLineStyle(
-                thickness: 15,
-                gradient: SweepGradient(
-                  colors: [
-                    Colors.green,
-                    Colors.yellow,
-                    Colors.orange,
-                    Colors.red,
-                  ],
-                  stops: [0.25, 0.5, 0.75, 1],
-                ),
-              ),
-              axisLabelStyle: const GaugeTextStyle(
-                fontSize: 14,
-                color: Colors.black,
-              ),
-              pointers: <GaugePointer>[
-                NeedlePointer(
-                  value: speed,
-                  enableAnimation: true,
-                  animationType: AnimationType.easeOutBack,
-                  needleColor: Colors.red,
-                  needleStartWidth: 1,
-                  needleEndWidth: 5,
-                  needleLength: 0.75,
-                  animationDuration: 2000,
-                  gradient: const LinearGradient(
-                    colors: [
-                      Colors.white,
-                      Colors.red,
-                    ],
-                  ),
-                  knobStyle: KnobStyle(
-                    color: Colors.transparent,
-                    borderColor: Colors.blue.withAlpha(100),
-                    borderWidth: 1,
-                  ),
-                ),
-              ],
-              ranges: [
-                GaugeRange(
-                  startValue: 0,
-                  endValue: 30,
-                  color: Colors.pink,
-                  startWidth: 15,
-                  endWidth: 15,
-                ),
-                GaugeRange(
-                  startValue: 30,
-                  endValue: 80,
-                  color: Colors.green,
-                  startWidth: 15,
-                  endWidth: 15,
-                ),
-                GaugeRange(
-                  startValue: 80,
-                  endValue: 160,
-                  color: Colors.amber,
-                  startWidth: 15,
-                  endWidth: 15,
-                ),
-                GaugeRange(
-                  startValue: 160,
-                  endValue: 240,
-                  color: Colors.red,
-                  startWidth: 15,
-                  endWidth: 15,
-                ),
-              ],
-              annotations: [
-                GaugeAnnotation(
-                  widget: Column(
-                    children: [
-                      Text(
-                        speed.toStringAsFixed(0),
-                        style: const TextStyle(
-                          fontSize: 50,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.teal,
-                          shadows: [
-                            Shadow(
-                              color: Colors.white,
-                              blurRadius: 20,
-                            ),
-                          ],
-                        ),
-                      ),
-                      const Text(
-                        "km/h",
-                        style: TextStyle(
-                          fontSize: 18,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ],
-                  ),
-                  angle: 90,
-                  positionFactor: 0.75,
-                )
-              ],
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  Widget buildRpmGauge() {
-    return SfRadialGauge(
-      axes: <RadialAxis>[
-        RadialAxis(
-          minimum: 0,
-          maximum: 8000,
-          pointers: <GaugePointer>[
-            NeedlePointer(
-              value: 3500, // Valor fijo de ejemplo
-              enableAnimation: true,
-              needleColor: Colors.red,
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget buildFuelGauge() {
-    return SfRadialGauge(
-      axes: <RadialAxis>[
-        RadialAxis(
-          minimum: 0,
-          maximum: 100,
-          pointers: <GaugePointer>[
-            NeedlePointer(
-              value: 65, // Porcentaje fijo de ejemplo
-              enableAnimation: true,
-              needleColor: Colors.orange,
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget buildTempGauge() {
-    return SfRadialGauge(
-      axes: <RadialAxis>[
-        RadialAxis(
-          minimum: 0,
-          maximum: 120,
-          pointers: <GaugePointer>[
-            NeedlePointer(
-              value: 92, // Temperatura fija de ejemplo
-              enableAnimation: true,
-              needleColor: Colors.redAccent,
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget buildBatteryGauge() {
-    return SfRadialGauge(
-      axes: <RadialAxis>[
-        RadialAxis(
-          minimum: 0,
-          maximum: 15,
-          pointers: <GaugePointer>[
-            NeedlePointer(
-              value: 12.8, // Voltaje fijo de ejemplo
-              enableAnimation: true,
-              needleColor: Colors.pinkAccent,
-            ),
-          ],
-        ),
-      ],
-    );
-  }
+  Map<String, dynamic> sensorData = {};
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        title: const Text(
-          "Dashboard",
-          style: TextStyle(
-            fontSize: 24,
-            color: Colors.black,
-          ),
-        ),
-        actions: <Widget>[
-          IconButton(
-            icon: const Icon(Icons.settings),
-            onPressed: () {},
-          ),
-        ],
-      ),
+      appBar: AppBar(title: const Text("Dashboard Sensores")),
       body: SafeArea(
-        child: Column(
-          children: [
-            // DropdownButton para seleccionar métrica
-            Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-              child: DropdownButton<String>(
-                value: selectedMetric,
-                items: <String>['Speed', 'RPM', 'Fuel', 'Temp', 'Battery']
-                    .map((String value) => DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        ))
-                    .toList(),
-                onChanged: (String? newValue) {
-                  setState(() {
-                    selectedMetric = newValue!;
-                  });
-                },
-                isExpanded: true,
-                style: const TextStyle(
-                  fontSize: 16,
-                  color: Colors.black,
-                ),
-                dropdownColor: Colors.white,
-                icon: const Icon(Icons.arrow_drop_down),
-              ),
-            ),
-            Expanded(
-              child: Center(
-                child: buildGauge(), // Mostrar gauge basado en selección
-              ),
-            ),
-          ],
+        child: StreamBuilder(
+          stream: _sensorsRef.onValue,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            if (snapshot.hasData && snapshot.data!.snapshot.value != null) {
+              sensorData = Map<String, dynamic>.from(
+                  snapshot.data!.snapshot.value as Map);
+              return Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: DropdownButton<String>(
+                      value: selectedMetricKey,
+                      items: metricLabels.keys
+                          .map((String key) => DropdownMenuItem<String>(
+                                value: key,
+                                child: Text(metricLabels[key]!),
+                              ))
+                          .toList(),
+                      onChanged: (String? newKey) {
+                        setState(() {
+                          selectedMetricKey = newKey!;
+                        });
+                      },
+                      isExpanded: true,
+                    ),
+                  ),
+                  Expanded(child: Center(child: buildGauge(selectedMetricKey))),
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Text(
+                      "Valor actual: ${getFormattedValue(selectedMetricKey)}",
+                      style: const TextStyle(
+                          fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ],
+              );
+            } else {
+              return const Center(child: Text("No se encontraron datos"));
+            }
+          },
         ),
       ),
     );
   }
+
+  Widget buildGauge(String metricKey) {
+    double value = 0.0;
+    try {
+      value = sensorData[metricKey]?.toDouble() ?? 0.0;
+    } catch (e) {
+      value = -1.0;
+    }
+
+    if (value < 0) {
+      return const Center(
+          child: Text("NO SOPORTADO",
+              style: TextStyle(fontSize: 24, color: Colors.red)));
+    }
+
+    return SfRadialGauge(
+      axes: <RadialAxis>[
+        RadialAxis(
+            minimum: 0,
+            maximum: getMaximumValue(metricKey),
+            pointers: [NeedlePointer(value: value)]),
+      ],
+    );
+  }
+
+  double getMaximumValue(String metric) {
+    switch (metric) {
+      case "Carga del motor":
+        return 100;
+      case "Consumo instantáneo combustible":
+        return 20;
+      case "Posición acelerador":
+        return 100;
+      case "Presión colector admisión":
+        return 300;
+      case "Presión combustible":
+        return 1000;
+      case "RPM":
+        return 8000;
+      case "Sensor MAP":
+        return 200;
+      case "Temperatura aceite":
+        return 150;
+      case "Temperatura refrigerante":
+        return 120;
+      case "Tiempo de encendido":
+        return 3600;
+      case "Vel vehículo":
+        return 240;
+      default:
+        return 100;
+    }
+  }
+
+  String getFormattedValue(String metricKey) {
+    double value = 0.0;
+    try {
+      value = sensorData[metricKey]?.toDouble() ?? 0.0;
+    } catch (e) {
+      return "N/A";
+    }
+    return value.toStringAsFixed(2);
+  }
+}
+
+//Sensores de combustible
+class sensoresCombustible extends StatefulWidget {
+  const sensoresCombustible({super.key});
+
+  @override
+  State<sensoresCombustible> createState() => _sensoresCombustibleState();
+}
+
+class _sensoresCombustibleState extends State<sensoresCombustible> {
+  final DatabaseReference _sensorsRef =
+      FirebaseDatabase.instance.ref('/SensoresCombustible');
+  String selectedMetricKey = "Consumo instantáneo de combustible";
+
+  final Map<String, String> metricLabels = {
+    "Consumo instantáneo de combustible": "Consumo instantáneo de combustible",
+    "Estado del sistema de combustible": "Estado del sistema de combustible",
+    "Nivel de combustible": "Nivel de combustible",
+    "Presión de la bomba de combustible": "Presión de la bomba de combustible",
+  };
+
+  Map<String, dynamic> sensorData = {};
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(title: const Text("Dashboard Sensores")),
+      body: SafeArea(
+        child: StreamBuilder(
+          stream: _sensorsRef.onValue,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            if (snapshot.hasData && snapshot.data!.snapshot.value != null) {
+              sensorData = Map<String, dynamic>.from(
+                  snapshot.data!.snapshot.value as Map);
+              return Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: DropdownButton<String>(
+                      value: selectedMetricKey,
+                      items: metricLabels.keys
+                          .map((String key) => DropdownMenuItem<String>(
+                                value: key,
+                                child: Text(metricLabels[key]!),
+                              ))
+                          .toList(),
+                      onChanged: (String? newKey) {
+                        setState(() {
+                          selectedMetricKey = newKey!;
+                        });
+                      },
+                      isExpanded: true,
+                    ),
+                  ),
+                  Expanded(child: Center(child: buildGauge(selectedMetricKey))),
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Text(
+                      "Valor actual: ${getFormattedValue(selectedMetricKey)}",
+                      style: const TextStyle(
+                          fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ],
+              );
+            } else {
+              return const Center(child: Text("No se encontraron datos"));
+            }
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget buildGauge(String metricKey) {
+    double value = 0.0;
+    try {
+      value = sensorData[metricKey]?.toDouble() ?? 0.0;
+    } catch (e) {
+      value = -1.0;
+    }
+
+    if (value < 0) {
+      return const Center(
+          child: Text("NO SOPORTADO",
+              style: TextStyle(fontSize: 24, color: Colors.red)));
+    }
+
+    return SfRadialGauge(
+      axes: <RadialAxis>[
+        RadialAxis(
+            minimum: 0,
+            maximum: getMaximumValue(metricKey),
+            pointers: [NeedlePointer(value: value)]),
+      ],
+    );
+  }
+
+  double getMaximumValue(String metric) {
+    switch (metric) {
+      case "Consumo instantáneo de combustible":
+        return 100;
+      case "Estado del sistema de combustible":
+        return 100;
+      case "Nivel de combustible":
+        return 100;
+      case "Presión de la bomba de combustible":
+        return 100;
+      default:
+        return 100;
+    }
+  }
+
+  String getFormattedValue(String metricKey) {
+    double value = 0.0;
+    try {
+      value = sensorData[metricKey]?.toDouble() ?? 0.0;
+    } catch (e) {
+      return "N/A";
+    }
+    return value.toStringAsFixed(2);
+  }
+}
+
+//Sensores de oxigeno
+class sensoresOxigeno extends StatefulWidget {
+  const sensoresOxigeno({super.key});
+
+  @override
+  State<sensoresOxigeno> createState() => _sensoresOxigenoState();
+}
+
+class _sensoresOxigenoState extends State<sensoresOxigeno> {
+  final DatabaseReference _sensorsRef =
+      FirebaseDatabase.instance.ref('/SensoresOxigeno');
+  String selectedMetricKey = "Sensor oxigeno-B1S1";
+
+  final Map<String, String> metricLabels = {
+    "Sensor oxigeno-B1S1": "Sensor oxigeno-B1S1",
+    "Sensor oxigeno-B1S2": "Sensor oxigeno-B1S2",
+    "Sensor oxigeno-B2S1": "Sensor oxigeno-B2S1",
+    "Sensor oxigeno-B2S2": "Sensor oxigeno-B2S2",
+    "Temp catalizador-B1S1": "Temp catalizador-B1S1",
+    "Temp catalizador-B1S2": "Temp catalizador-B1S2",
+    "Temp catalizador-B2S1": "Temp catalizador-B2S1",
+    "Temp catalizador-B2S2": "Temp catalizador-B2S2",
+  };
+
+  Map<String, dynamic> sensorData = {};
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(title: const Text("Dashboard Sensores")),
+      body: SafeArea(
+        child: StreamBuilder(
+          stream: _sensorsRef.onValue,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            if (snapshot.hasData && snapshot.data!.snapshot.value != null) {
+              sensorData = Map<String, dynamic>.from(
+                  snapshot.data!.snapshot.value as Map);
+              return Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: DropdownButton<String>(
+                      value: selectedMetricKey,
+                      items: metricLabels.keys
+                          .map((String key) => DropdownMenuItem<String>(
+                                value: key,
+                                child: Text(metricLabels[key]!),
+                              ))
+                          .toList(),
+                      onChanged: (String? newKey) {
+                        setState(() {
+                          selectedMetricKey = newKey!;
+                        });
+                      },
+                      isExpanded: true,
+                    ),
+                  ),
+                  Expanded(child: Center(child: buildGauge(selectedMetricKey))),
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Text(
+                      "Valor actual: ${getFormattedValue(selectedMetricKey)}",
+                      style: const TextStyle(
+                          fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ],
+              );
+            } else {
+              return const Center(child: Text("No se encontraron datos"));
+            }
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget buildGauge(String metricKey) {
+    double value = 0.0;
+    try {
+      value = sensorData[metricKey]?.toDouble() ?? 0.0;
+    } catch (e) {
+      value = -1.0;
+    }
+
+    if (value < 0) {
+      return const Center(
+          child: Text("NO SOPORTADO",
+              style: TextStyle(fontSize: 24, color: Colors.red)));
+    }
+
+    return SfRadialGauge(
+      axes: <RadialAxis>[
+        RadialAxis(
+            minimum: 0,
+            maximum: getMaximumValue(metricKey),
+            pointers: [NeedlePointer(value: value)]),
+      ],
+    );
+  }
+
+  double getMaximumValue(String metric) {
+    switch (metric) {
+      case "Sensor oxigeno-B1S1":
+        return 20;
+      case "Sensor oxigeno-B1S2":
+        return 20;
+      case "Sensor oxigeno-B2S1":
+        return 20;
+      case "Sensor oxigeno-B2S2":
+        return 20;
+      case "Temp catalizador-B1S1":
+        return 20;
+      case "Temp catalizador-B1S2":
+        return 20;
+      case "Temp catalizador-B2S1":
+        return 20;
+      case "Temp catalizador-B2S2":
+        return 20;
+      default:
+        return 100;
+    }
+  }
+
+  String getFormattedValue(String metricKey) {
+    double value = 0.0;
+    try {
+      value = sensorData[metricKey]?.toDouble() ?? 0.0;
+    } catch (e) {
+      return "N/A";
+    }
+    return value.toStringAsFixed(2);
+  }
+}
+
+void main() {
+  runApp(const MaterialApp(
+    debugShowCheckedModeBanner: false,
+    home: MainMenuPage(),
+  ));
 }

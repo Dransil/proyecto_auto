@@ -310,7 +310,13 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
                   const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
               child: DropdownButton<String>(
                 value: selectedMetric,
-                items: <String>['Velocidad', 'RPM', 'Combustible', 'Temperatura', 'Bateria']
+                items: <String>[
+                  'Velocidad',
+                  'RPM',
+                  'Combustible',
+                  'Temperatura',
+                  'Bateria'
+                ]
                     .map((String value) => DropdownMenuItem<String>(
                           value: value,
                           child: Text(value),
