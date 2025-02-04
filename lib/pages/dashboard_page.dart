@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 
 class SpeedometerPage extends StatefulWidget {
@@ -10,78 +10,195 @@ class SpeedometerPage extends StatefulWidget {
 }
 
 class _SpeedometerPageState extends State<SpeedometerPage> {
-  final ValueNotifier<double> _notifier = ValueNotifier(0.0);
-  late final Ticker _ticker;
-  bool isAccelerating = false;
-  String selectedMetric = "Velocidad"; // Métrica inicial seleccionada
+  final ValueNotifier<double> _velocidadNotifier = ValueNotifier(0.0);
+  final ValueNotifier<double> _rpmNotifier = ValueNotifier(0.0);
+  final ValueNotifier<double> _cargaMotorNotifier = ValueNotifier(0.0);
+  final ValueNotifier<double> _cargaInComNotifier = ValueNotifier(0.0);
+  final ValueNotifier<double> _posiAceNotifier = ValueNotifier(0.0);
+  final ValueNotifier<double> _presColAdmiNotifier = ValueNotifier(0.0);
+  final ValueNotifier<double> _presComNotifier = ValueNotifier(0.0);
+  final ValueNotifier<double> _sensorMapNotifier = ValueNotifier(0.0);
+  final ValueNotifier<double> _tempAceNotifier = ValueNotifier(0.0);
+  final ValueNotifier<double> _tempRefNotifier = ValueNotifier(0.0);
+  final ValueNotifier<double> _tiemEncNotifier = ValueNotifier(0.0);
+  String selectedMetric = "Velocidad";
+  final DatabaseReference _databaseRef = FirebaseDatabase.instance.ref();
 
   @override
   void initState() {
     super.initState();
-    _ticker = Ticker(updateSpeed);
-    _ticker.start();
+    _setupDatabaseListeners();
   }
 
-  void updateSpeed(Duration elapsed) {
-    setState(() {
-      if (isAccelerating) {
-        // gradual accelerating
-        _notifier.value = (_notifier.value + elapsed.inMilliseconds * 0.00003)
-            .clamp(0.0, 240);
-      } else {
-        // gradual declerating
-        _notifier.value = (_notifier.value - elapsed.inMilliseconds * 0.00001)
-            .clamp(0.0, 240);
+  void _setupDatabaseListeners() {
+    // Listener para la velocidad
+    _databaseRef.child('/Sensores/Vel vehículo').onValue.listen((event) {
+      final data = event.snapshot.value;
+      if (data != null) {
+        if (data == "No soportado") {
+          _velocidadNotifier.value = -1; // Valor especial para indicar "No soportado"
+        } else {
+          final velocidad = double.tryParse(data.toString()) ?? 0.0;
+          _velocidadNotifier.value = velocidad;
+        }
       }
     });
-  }
-
-  void startAcceleration() {
-    setState(() {
-      isAccelerating = true;
+    _databaseRef.child('/Sensores/RPM').onValue.listen((event) {
+      final data = event.snapshot.value;
+      if (data != null) {
+        if (data == "No soportado") {
+          _rpmNotifier.value = -1; // Valor especial para indicar "No soportado"
+        } else {
+          final rpm = double.tryParse(data.toString()) ?? 0.0;
+          _rpmNotifier.value = rpm;
+        }
+      }
     });
-  }
-
-  void startDecleration() {
-    setState(() {
-      isAccelerating = false;
+    _databaseRef.child('/Sensores/Carga del motor').onValue.listen((event) {
+      final data = event.snapshot.value;
+      if (data != null) {
+        if (data == "No soportado") {
+          _cargaMotorNotifier.value = -1; // Valor especial para indicar "No soportado"
+        } else {
+          final carmotor = double.tryParse(data.toString()) ?? 0.0;
+          _cargaMotorNotifier.value = carmotor;
+        }
+      }
     });
-  }
-
-  void applyBreak() {
-    setState(() {
-      isAccelerating = false;
-      // smooth braking
-      _notifier.value = (_notifier.value - 20).clamp(0.0, 240);
+    _databaseRef.child('/Sensores/Consumo instantáneo combustible').onValue.listen((event) {
+      final data = event.snapshot.value;
+      if (data != null) {
+        if (data == "No soportado") {
+          _cargaInComNotifier.value = -1; // Valor especial para indicar "No soportado"
+        } else {
+          final conincom = double.tryParse(data.toString()) ?? 0.0;
+          _cargaInComNotifier.value = conincom;
+        }
+      }
     });
-  }
-
-  @override
-  void dispose() {
-    _ticker.dispose();
-    _notifier.dispose();
-    super.dispose();
+    _databaseRef.child('/Sensores/Posición acelerador').onValue.listen((event) {
+      final data = event.snapshot.value;
+      if (data != null) {
+        if (data == "No soportado") {
+          _posiAceNotifier.value = -1; // Valor especial para indicar "No soportado"
+        } else {
+          final posace = double.tryParse(data.toString()) ?? 0.0;
+          _posiAceNotifier.value = posace;
+        }
+      }
+    });
+    _databaseRef.child('/Sensores/Presión colector admisión').onValue.listen((event) {
+      final data = event.snapshot.value;
+      if (data != null) {
+        if (data == "No soportado") {
+          _presColAdmiNotifier.value = -1; // Valor especial para indicar "No soportado"
+        } else {
+          final prescoladm = double.tryParse(data.toString()) ?? 0.0;
+          _presColAdmiNotifier.value = prescoladm;
+        }
+      }
+    });
+    _databaseRef.child('/Sensores/Presión combustible').onValue.listen((event) {
+      final data = event.snapshot.value;
+      if (data != null) {
+        if (data == "No soportado") {
+          _presComNotifier.value = -1; // Valor especial para indicar "No soportado"
+        } else {
+          final prescom = double.tryParse(data.toString()) ?? 0.0;
+          _presComNotifier.value = prescom;
+        }
+      }
+    });
+    _databaseRef.child('/Sensores/Sensor MAP').onValue.listen((event) {
+      final data = event.snapshot.value;
+      if (data != null) {
+        if (data == "No soportado") {
+          _sensorMapNotifier.value = -1; // Valor especial para indicar "No soportado"
+        } else {
+          final sensmap = double.tryParse(data.toString()) ?? 0.0;
+          _sensorMapNotifier.value = sensmap;
+        }
+      }
+    });
+    _databaseRef.child('/Sensores/Temperatura aceite').onValue.listen((event) {
+      final data = event.snapshot.value;
+      if (data != null) {
+        if (data == "No soportado") {
+          _tempAceNotifier.value = -1; // Valor especial para indicar "No soportado"
+        } else {
+          final tempace = double.tryParse(data.toString()) ?? 0.0;
+          _tempAceNotifier.value = tempace;
+        }
+      }
+    });
+    _databaseRef.child('/Sensores/Temperatura refrigerante').onValue.listen((event) {
+      final data = event.snapshot.value;
+      if (data != null) {
+        if (data == "No soportado") {
+          _tempRefNotifier.value = -1; // Valor especial para indicar "No soportado"
+        } else {
+          final tempref = double.tryParse(data.toString()) ?? 0.0;
+          _tempRefNotifier.value = tempref;
+        }
+      }
+    });
+    _databaseRef.child('/Sensores/Tiempo de encendido').onValue.listen((event) {
+      final data = event.snapshot.value;
+      if (data != null) {
+        if (data == "No soportado") {
+          _tiemEncNotifier.value = -1; // Valor especial para indicar "No soportado"
+        } else {
+          final tiempen = double.tryParse(data.toString()) ?? 0.0;
+          _tiemEncNotifier.value = tiempen;
+        }
+      }
+    });
   }
 
   Widget buildGauge() {
     switch (selectedMetric) {
       case 'RPM':
         return buildRpmGauge();
-      case 'Combustible':
-        return buildCombustibleGauge();
-      case 'Temperatura':
-        return buildTemperaturaGauge();
-      case 'Bateria':
-        return buildBateriaGauge();
+      case 'Carga del motor':
+        return buildCargamotorGauge();
+      case 'Consumo instantáneo combustible':
+        return buildConsumoInsComGauge();
+      case 'Posición acelerador':
+        return buildPosiAceGauge();
+      case 'Presión colector admisión':
+        return buildPresColAdmGauge();
+      case 'Presión combustible':
+        return buildPresComGauge();
+      case 'Sensor MAP':
+        return buildSensMapGauge();
+      case 'Temperatura aceite':
+        return buildTempAceiteGauge();
+      case 'Temperatura refrigerante':
+        return buildTempRefGauge();
+      case 'Tiempo de encendido':
+        return buildTieEncGauge();
       default:
         return buildSpeedGauge();
     }
   }
 
   Widget buildSpeedGauge() {
+    
     return ValueListenableBuilder<double>(
-      valueListenable: _notifier,
+      valueListenable: _velocidadNotifier,
       builder: (context, velocidad, child) {
+        if (velocidad == -1) {
+          return Center(
+            child: Text(
+              "No soportado",
+              style: TextStyle(
+                fontSize: 40,
+                color: Colors.red,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          );
+        }
         return SfRadialGauge(
           axes: <RadialAxis>[
             RadialAxis(
@@ -174,7 +291,7 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
                 GaugeAnnotation(
                   widget: Column(
                     children: [
-                      const SizedBox(height: 125),
+                      const SizedBox(height: 180),
                       Text(
                         velocidad.toStringAsFixed(0),
                         style: const TextStyle(
@@ -210,75 +327,668 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
   }
 
   Widget buildRpmGauge() {
-    return SfRadialGauge(
-      axes: <RadialAxis>[
-        RadialAxis(
-          minimum: 0,
-          maximum: 8000,
-          pointers: <GaugePointer>[
-            NeedlePointer(
-              value: 3500, // Valor fijo de ejemplo
-              enableAnimation: true,
-              needleColor: Colors.red,
+    return ValueListenableBuilder<double>(
+      valueListenable: _rpmNotifier,
+      builder: (context, rpm, child) {
+        if (rpm == -1) {
+          return Center(
+            child: Text(
+              "No soportado",
+              style: TextStyle(
+                fontSize: 40,
+                color: Colors.red,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          );
+        }
+        return SfRadialGauge(
+          axes: <RadialAxis>[
+            RadialAxis(
+              minimum: 0,
+              maximum: 8000,
+              pointers: <GaugePointer>[
+                NeedlePointer(
+                  value: rpm,
+                  enableAnimation: true,
+                  needleColor: Colors.red,
+                ),
+              ],
+              annotations: [
+                GaugeAnnotation(
+                  widget: Column(
+                    children: [
+                      const SizedBox(height: 180),
+                      Text(
+                        rpm.toStringAsFixed(0),
+                        style: const TextStyle(
+                          fontSize: 50,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.teal,
+                          shadows: [
+                            Shadow(
+                              color: Colors.white,
+                              blurRadius: 20,
+                            ),
+                          ],
+                        ),
+                      ),
+                      const Text(
+                        "RPM",
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ],
+                  ),
+                  angle: 90,
+                  positionFactor: 0.75,
+                )
+              ],
             ),
           ],
-        ),
-      ],
+        );
+      },
     );
   }
 
-  Widget buildCombustibleGauge() {
-    return SfRadialGauge(
-      axes: <RadialAxis>[
-        RadialAxis(
-          minimum: 0,
-          maximum: 100,
-          pointers: <GaugePointer>[
-            NeedlePointer(
-              value: 65, // Porcentaje fijo de ejemplo
-              enableAnimation: true,
-              needleColor: Colors.orange,
+  Widget buildCargamotorGauge() {
+    return ValueListenableBuilder<double>(
+      valueListenable: _cargaMotorNotifier,
+      builder: (context, carmotor, child) {
+        if (carmotor == -1) {
+          return Center(
+            child: Text(
+              "No soportado",
+              style: TextStyle(
+                fontSize: 40,
+                color: Colors.red,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          );
+        }
+        return SfRadialGauge(
+          axes: <RadialAxis>[
+            RadialAxis(
+              minimum: 0,
+              maximum: 8000,
+              pointers: <GaugePointer>[
+                NeedlePointer(
+                  value: carmotor,
+                  enableAnimation: true,
+                  needleColor: Colors.red,
+                ),
+              ],
+              annotations: [
+                GaugeAnnotation(
+                  widget: Column(
+                    children: [
+                      const SizedBox(height: 180),
+                      Text(
+                        carmotor.toStringAsFixed(0),
+                        style: const TextStyle(
+                          fontSize: 50,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.teal,
+                          shadows: [
+                            Shadow(
+                              color: Colors.white,
+                              blurRadius: 20,
+                            ),
+                          ],
+                        ),
+                      ),
+                      const Text(
+                        "Carga del Motor",
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ],
+                  ),
+                  angle: 90,
+                  positionFactor: 0.75,
+                )
+              ],
             ),
           ],
-        ),
-      ],
-    );
+        );
+      },
+    ); 
   }
 
-  Widget buildTemperaturaGauge() {
-    return SfRadialGauge(
-      axes: <RadialAxis>[
-        RadialAxis(
-          minimum: 0,
-          maximum: 120,
-          pointers: <GaugePointer>[
-            NeedlePointer(
-              value: 92,
-              enableAnimation: true,
-              needleColor: Colors.redAccent,
+  Widget buildConsumoInsComGauge() {
+    return ValueListenableBuilder<double>(
+      valueListenable: _cargaInComNotifier,
+      builder: (context, conincom, child) {
+        if (conincom == -1) {
+          return Center(
+            child: Text(
+              "No soportado",
+              style: TextStyle(
+                fontSize: 40,
+                color: Colors.red,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          );
+        }
+        return SfRadialGauge(
+          axes: <RadialAxis>[
+            RadialAxis(
+              minimum: 0,
+              maximum: 8000,
+              pointers: <GaugePointer>[
+                NeedlePointer(
+                  value: conincom,
+                  enableAnimation: true,
+                  needleColor: Colors.red,
+                ),
+              ],
+              annotations: [
+                GaugeAnnotation(
+                  widget: Column(
+                    children: [
+                      const SizedBox(height: 180),
+                      Text(
+                        conincom.toStringAsFixed(0),
+                        style: const TextStyle(
+                          fontSize: 50,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.teal,
+                          shadows: [
+                            Shadow(
+                              color: Colors.white,
+                              blurRadius: 20,
+                            ),
+                          ],
+                        ),
+                      ),
+                      const Text(
+                        "Consumo instantaneo de combustible",
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ],
+                  ),
+                  angle: 90,
+                  positionFactor: 0.75,
+                )
+              ],
             ),
           ],
-        ),
-      ],
-    );
+        );
+      },
+    );  
+  }
+  Widget buildPosiAceGauge() {
+    return ValueListenableBuilder<double>(
+      valueListenable: _posiAceNotifier,
+      builder: (context, posace, child) {
+        if (posace == -1) {
+          return Center(
+            child: Text(
+              "No soportado",
+              style: TextStyle(
+                fontSize: 40,
+                color: Colors.red,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          );
+        }
+        return SfRadialGauge(
+          axes: <RadialAxis>[
+            RadialAxis(
+              minimum: 0,
+              maximum: 8000,
+              pointers: <GaugePointer>[
+                NeedlePointer(
+                  value: posace,
+                  enableAnimation: true,
+                  needleColor: Colors.red,
+                ),
+              ],
+              annotations: [
+                GaugeAnnotation(
+                  widget: Column(
+                    children: [
+                      const SizedBox(height: 180),
+                      Text(
+                        posace.toStringAsFixed(0),
+                        style: const TextStyle(
+                          fontSize: 50,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.teal,
+                          shadows: [
+                            Shadow(
+                              color: Colors.white,
+                              blurRadius: 20,
+                            ),
+                          ],
+                        ),
+                      ),
+                      const Text(
+                        "Posición del acelerador",
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ],
+                  ),
+                  angle: 90,
+                  positionFactor: 0.75,
+                )
+              ],
+            ),
+          ],
+        );
+      },
+    ); 
+  }
+  Widget buildPresColAdmGauge() {
+    return ValueListenableBuilder<double>(
+      valueListenable: _presComNotifier,
+      builder: (context, prescom, child) {
+        if (prescom == -1) {
+          return Center(
+            child: Text(
+              "No soportado",
+              style: TextStyle(
+                fontSize: 40,
+                color: Colors.red,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          );
+        }
+        return SfRadialGauge(
+          axes: <RadialAxis>[
+            RadialAxis(
+              minimum: 0,
+              maximum: 8000,
+              pointers: <GaugePointer>[
+                NeedlePointer(
+                  value: prescom,
+                  enableAnimation: true,
+                  needleColor: Colors.red,
+                ),
+              ],
+              annotations: [
+                GaugeAnnotation(
+                  widget: Column(
+                    children: [
+                      const SizedBox(height: 180),
+                      Text(
+                        prescom.toStringAsFixed(0),
+                        style: const TextStyle(
+                          fontSize: 50,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.teal,
+                          shadows: [
+                            Shadow(
+                              color: Colors.white,
+                              blurRadius: 20,
+                            ),
+                          ],
+                        ),
+                      ),
+                      const Text(
+                        "Presión colector admisión",
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ],
+                  ),
+                  angle: 90,
+                  positionFactor: 0.75,
+                )
+              ],
+            ),
+          ],
+        );
+      },
+    ); 
+  }
+  Widget buildPresComGauge() {
+    return ValueListenableBuilder<double>(
+      valueListenable: _presComNotifier,
+      builder: (context, prescom, child) {
+        if (prescom == -1) {
+          return Center(
+            child: Text(
+              "No soportado",
+              style: TextStyle(
+                fontSize: 40,
+                color: Colors.red,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          );
+        }
+        return SfRadialGauge(
+          axes: <RadialAxis>[
+            RadialAxis(
+              minimum: 0,
+              maximum: 8000,
+              pointers: <GaugePointer>[
+                NeedlePointer(
+                  value: prescom,
+                  enableAnimation: true,
+                  needleColor: Colors.red,
+                ),
+              ],
+              annotations: [
+                GaugeAnnotation(
+                  widget: Column(
+                    children: [
+                      const SizedBox(height: 180),
+                      Text(
+                        prescom.toStringAsFixed(0),
+                        style: const TextStyle(
+                          fontSize: 50,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.teal,
+                          shadows: [
+                            Shadow(
+                              color: Colors.white,
+                              blurRadius: 20,
+                            ),
+                          ],
+                        ),
+                      ),
+                      const Text(
+                        "Presion de combustible",
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ],
+                  ),
+                  angle: 90,
+                  positionFactor: 0.75,
+                )
+              ],
+            ),
+          ],
+        );
+      },
+    ); 
+  }
+  Widget buildSensMapGauge() {
+    return ValueListenableBuilder<double>(
+      valueListenable: _sensorMapNotifier,
+      builder: (context, sensmap, child) {
+        if (sensmap == -1) {
+          return Center(
+            child: Text(
+              "No soportado",
+              style: TextStyle(
+                fontSize: 40,
+                color: Colors.red,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          );
+        }
+        return SfRadialGauge(
+          axes: <RadialAxis>[
+            RadialAxis(
+              minimum: 0,
+              maximum: 8000,
+              pointers: <GaugePointer>[
+                NeedlePointer(
+                  value: sensmap,
+                  enableAnimation: true,
+                  needleColor: Colors.red,
+                ),
+              ],
+              annotations: [
+                GaugeAnnotation(
+                  widget: Column(
+                    children: [
+                      const SizedBox(height: 180),
+                      Text(
+                        sensmap.toStringAsFixed(0),
+                        style: const TextStyle(
+                          fontSize: 50,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.teal,
+                          shadows: [
+                            Shadow(
+                              color: Colors.white,
+                              blurRadius: 20,
+                            ),
+                          ],
+                        ),
+                      ),
+                      const Text(
+                        "Sensor MAP",
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ],
+                  ),
+                  angle: 90,
+                  positionFactor: 0.75,
+                )
+              ],
+            ),
+          ],
+        );
+      },
+    ); 
+  }
+  Widget buildTempAceiteGauge() {
+    return ValueListenableBuilder<double>(
+      valueListenable: _tempAceNotifier,
+      builder: (context, tempace, child) {
+        if (tempace == -1) {
+          return Center(
+            child: Text(
+              "No soportado",
+              style: TextStyle(
+                fontSize: 40,
+                color: Colors.red,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          );
+        }
+        return SfRadialGauge(
+          axes: <RadialAxis>[
+            RadialAxis(
+              minimum: 0,
+              maximum: 8000,
+              pointers: <GaugePointer>[
+                NeedlePointer(
+                  value: tempace,
+                  enableAnimation: true,
+                  needleColor: Colors.red,
+                ),
+              ],
+              annotations: [
+                GaugeAnnotation(
+                  widget: Column(
+                    children: [
+                      const SizedBox(height: 180),
+                      Text(
+                        tempace.toStringAsFixed(0),
+                        style: const TextStyle(
+                          fontSize: 50,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.teal,
+                          shadows: [
+                            Shadow(
+                              color: Colors.white,
+                              blurRadius: 20,
+                            ),
+                          ],
+                        ),
+                      ),
+                      const Text(
+                        "Temperatura del aceite",
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ],
+                  ),
+                  angle: 90,
+                  positionFactor: 0.75,
+                )
+              ],
+            ),
+          ],
+        );
+      },
+    ); 
   }
 
-  Widget buildBateriaGauge() {
-    return SfRadialGauge(
-      axes: <RadialAxis>[
-        RadialAxis(
-          minimum: 0,
-          maximum: 15,
-          pointers: <GaugePointer>[
-            NeedlePointer(
-              value: 12.8, // Voltaje fijo de ejemplo
-              enableAnimation: true,
-              needleColor: Colors.pinkAccent,
+  Widget buildTempRefGauge() {
+    return ValueListenableBuilder<double>(
+      valueListenable: _tempRefNotifier,
+      builder: (context, tempref, child) {
+        if (tempref == -1) {
+          return Center(
+            child: Text(
+              "No soportado",
+              style: TextStyle(
+                fontSize: 40,
+                color: Colors.red,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          );
+        }
+        return SfRadialGauge(
+          axes: <RadialAxis>[
+            RadialAxis(
+              minimum: 0,
+              maximum: 8000,
+              pointers: <GaugePointer>[
+                NeedlePointer(
+                  value: tempref,
+                  enableAnimation: true,
+                  needleColor: Colors.red,
+                ),
+              ],
+              annotations: [
+                GaugeAnnotation(
+                  widget: Column(
+                    children: [
+                      const SizedBox(height: 180),
+                      Text(
+                        tempref.toStringAsFixed(0),
+                        style: const TextStyle(
+                          fontSize: 50,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.teal,
+                          shadows: [
+                            Shadow(
+                              color: Colors.white,
+                              blurRadius: 20,
+                            ),
+                          ],
+                        ),
+                      ),
+                      const Text(
+                        "Temperatura refrigerante",
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ],
+                  ),
+                  angle: 90,
+                  positionFactor: 0.75,
+                )
+              ],
             ),
           ],
-        ),
-      ],
-    );
+        );
+      },
+    ); 
+  }
+
+  Widget buildTieEncGauge() {
+    return ValueListenableBuilder<double>(
+      valueListenable: _tiemEncNotifier,
+      builder: (context, tiempen, child) {
+        if (tiempen == -1) {
+          return Center(
+            child: Text(
+              "No soportado",
+              style: TextStyle(
+                fontSize: 40,
+                color: Colors.red,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          );
+        }
+        return SfRadialGauge(
+          axes: <RadialAxis>[
+            RadialAxis(
+              minimum: 0,
+              maximum: 8000,
+              pointers: <GaugePointer>[
+                NeedlePointer(
+                  value: tiempen,
+                  enableAnimation: true,
+                  needleColor: Colors.red,
+                ),
+              ],
+              annotations: [
+                GaugeAnnotation(
+                  widget: Column(
+                    children: [
+                      const SizedBox(height: 180),
+                      Text(
+                        tiempen.toStringAsFixed(0),
+                        style: const TextStyle(
+                          fontSize: 50,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.teal,
+                          shadows: [
+                            Shadow(
+                              color: Colors.white,
+                              blurRadius: 20,
+                            ),
+                          ],
+                        ),
+                      ),
+                      const Text(
+                        "Tiempo de Encendido",
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ],
+                  ),
+                  angle: 90,
+                  positionFactor: 0.75,
+                )
+              ],
+            ),
+          ],
+        );
+      },
+    ); 
   }
 
   @override
@@ -310,7 +1020,19 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
                   const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
               child: DropdownButton<String>(
                 value: selectedMetric,
-                items: <String>['Velocidad', 'RPM', 'Combustible', 'Temperatura', 'Bateria']
+                items: <String>[
+                  'Velocidad',//Sensores/Vel vehículo
+                  'RPM',//Sensores/RPM
+                  'Carga del motor',//Sensores/Carga del motor
+                  'Consumo instantáneo combustible',//Sensores/Consumo instantáneo combustible
+                  'Posición acelerador',//Sensores/Posición acelerador
+                  'Presión colector admisión',//Sensores/Presión colector admisión
+                  'Presión combustible', //Sensores/Presión combustible
+                  'Sensor MAP', //Sensores/Sensor MAP
+                  'Temperatura aceite', //Sensores/Temperatura aceite
+                  'Temperatura refrigerante', //Sensores/Temperatura refrigerante
+                  'Tiempo de encendido', //Sensores/Tiempo de encendido
+                ]
                     .map((String value) => DropdownMenuItem<String>(
                           value: value,
                           child: Text(value),
