@@ -1,6 +1,5 @@
-import 'dart:async';
-import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class RealTimeLineChart extends StatefulWidget {
@@ -10,84 +9,57 @@ class RealTimeLineChart extends StatefulWidget {
 
 class _RealTimeLineChartState extends State<RealTimeLineChart> {
   List<ChartData> chartData = [];
-  late Timer _timer;
-  int timeCounter = 0;
-  final Random _random = Random();
-  String selectedChart = 'Voltaje de la batería'; // Opción inicial seleccionada
+  late DatabaseReference _databaseRef;
+  String selectedChart = '/Sensores/Voltaje'; // Opción inicial seleccionada
 
   @override
   void initState() {
     super.initState();
+    _databaseRef = FirebaseDatabase.instance.ref();
+    _setupDatabaseListener();
+  }
 
-    // Inicializar con un punto inicial
-    chartData = [ChartData(0, 0)];
-
-    // Timer para actualizar los datos cada segundo
-    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
-      setState(() {
-        timeCounter++;
-
-        // Generar valores según la métrica seleccionada
-        double newValue = _generateDataForSelectedChart();
-
-        chartData.add(ChartData(timeCounter, newValue));
-
-        if (chartData.length > 500) {
-          chartData.removeAt(0);
-        }
-      });
+  // Método para configurar el listener de Firebase
+  void _setupDatabaseListener() {
+    _databaseRef.child(selectedChart).onValue.listen((event) {
+      final data = event.snapshot.value;
+      if (data != null) {
+        final double newValue = double.tryParse(data.toString()) ?? 0.0;
+        setState(() {
+          chartData.add(ChartData(chartData.length, newValue));
+          if (chartData.length > 5000) {
+            chartData.removeAt(0); // Limitar el número de puntos en el gráfico
+          }
+        });
+      }
     });
-  }
-
-  @override
-  void dispose() {
-    _timer.cancel();
-    super.dispose();
-  }
-
-  // Método para generar datos simulados según la métrica seleccionada
-  double _generateDataForSelectedChart() {
-    switch (selectedChart) {
-      case 'Voltaje de la batería':
-        return 11.5 + _random.nextDouble() * 2.5; // Rango: 11.5V a 14.0V
-      case 'Revoluciones por minuto':
-        return 800 + _random.nextDouble() * 6200; // Rango: 800 a 7000 RPM
-      case 'Velocidad del vehículo':
-        return _random.nextDouble() * 220; // Rango: 0 a 220 km/h
-      case 'Posición del acelerador':
-        return _random.nextDouble() * 100; // Rango: 0% a 100%
-      case 'Temperatura del refrigerante':
-        return 70 + _random.nextDouble() * 50; // Rango: 70°C a 120°C
-      case 'Temperatura del aire de admisión':
-        return 10 + _random.nextDouble() * 40; // Rango: 10°C a 50°C
-      case 'Carga del motor':
-        return _random.nextDouble() * 100; // Rango: 0% a 100%
-      case 'Avance de encendido':
-        return -10 + _random.nextDouble() * 40; // Rango: -10° a 30°
-      default:
-        return 0.0;
-    }
   }
 
   // Método para obtener el rango máximo según la métrica seleccionada
   double _getYAxisMax() {
     switch (selectedChart) {
-      case 'Voltaje de la batería':
-        return 14.0;
-      case 'Revoluciones por minuto':
-        return 7000;
-      case 'Velocidad del vehículo':
-        return 220;
-      case 'Posición del acelerador':
-        return 100;
-      case 'Temperatura del refrigerante':
-        return 120;
-      case 'Temperatura del aire de admisión':
-        return 50;
-      case 'Carga del motor':
-        return 100;
-      case 'Avance de encendido':
-        return 30;
+      case '/Sensores/Voltaje':
+        return 16; // Rango máximo para velocidad del vehículo
+      case '/Sensores/RPM':
+        return 7000; // Rango máximo para RPM
+      case '/Sensores/Carga del motor':
+        return 100; // Rango máximo para carga del motor
+      case '/Sensores/Consumo instantáneo combustible':
+        return 50; // Rango máximo para consumo de combustible
+      case '/Sensores/Posición acelerador':
+        return 100; // Rango máximo para posición del acelerador
+      case '/Sensores/Presión colector admisión':
+        return 100; // Rango máximo para presión del colector de admisión
+      case '/Sensores/Presión combustible':
+        return 100; // Rango máximo para presión de combustible
+      case '/Sensores/Sensor MAP':
+        return 100; // Rango máximo para sensor MAP
+      case '/Sensores/Temperatura aceite':
+        return 120; // Rango máximo para temperatura del aceite
+      case '/Sensores/Temperatura refrigerante':
+        return 120; // Rango máximo para temperatura del refrigerante
+      case '/Sensores/Tiempo de encendido':
+        return 30; // Rango máximo para tiempo de encendido
       default:
         return 0.0;
     }
@@ -96,22 +68,28 @@ class _RealTimeLineChartState extends State<RealTimeLineChart> {
   // Método para obtener el rango mínimo según la métrica seleccionada
   double _getYAxisMin() {
     switch (selectedChart) {
-      case 'Voltaje de la batería':
-        return 11.5;
-      case 'Revoluciones por minuto':
-        return 800;
-      case 'Velocidad del vehículo':
-        return 0;
-      case 'Posición del acelerador':
-        return 0;
-      case 'Temperatura del refrigerante':
-        return 70;
-      case 'Temperatura del aire de admisión':
-        return 10;
-      case 'Carga del motor':
-        return 0;
-      case 'Avance de encendido':
-        return -10;
+      case '/Sensores/Voltaje':
+        return 0; // Rango mínimo para velocidad del vehículo
+      case '/Sensores/RPM':
+        return 0; // Rango mínimo para RPM
+      case '/Sensores/Carga del motor':
+        return 0; // Rango mínimo para carga del motor
+      case '/Sensores/Consumo instantáneo combustible':
+        return 0; // Rango mínimo para consumo de combustible
+      case '/Sensores/Posición acelerador':
+        return 0; // Rango mínimo para posición del acelerador
+      case '/Sensores/Presión colector admisión':
+        return 0; // Rango mínimo para presión del colector de admisión
+      case '/Sensores/Presión combustible':
+        return 0; // Rango mínimo para presión de combustible
+      case '/Sensores/Sensor MAP':
+        return 0; // Rango mínimo para sensor MAP
+      case '/Sensores/Temperatura aceite':
+        return 0; // Rango mínimo para temperatura del aceite
+      case '/Sensores/Temperatura refrigerante':
+        return 0; // Rango mínimo para temperatura del refrigerante
+      case '/Sensores/Tiempo de encendido':
+        return -10; // Rango mínimo para tiempo de encendido
       default:
         return 0.0;
     }
@@ -131,23 +109,26 @@ class _RealTimeLineChartState extends State<RealTimeLineChart> {
             child: DropdownButton<String>(
               value: selectedChart,
               items: <String>[
-                'Voltaje de la batería',
-                'Revoluciones por minuto',
-                'Velocidad del vehículo',
-                'Posición del acelerador',
-                'Temperatura del refrigerante',
-                'Temperatura del aire de admisión',
-                'Carga del motor',
-                'Avance de encendido',
+                '/Sensores/Voltaje',
+                '/Sensores/RPM',
+                '/Sensores/Carga del motor',
+                '/Sensores/Consumo instantáneo combustible',
+                '/Sensores/Posición acelerador',
+                '/Sensores/Presión colector admisión',
+                '/Sensores/Presión combustible',
+                '/Sensores/Sensor MAP',
+                '/Sensores/Temperatura aceite',
+                '/Sensores/Temperatura refrigerante',
+                '/Sensores/Tiempo de encendido',
               ].map((String value) => DropdownMenuItem<String>(
                     value: value,
-                    child: Text(value),
+                    child: Text(value.replaceAll('/Sensores/', '')), // Mostrar nombre sin "/Sensores/"
                   )).toList(),
               onChanged: (String? newValue) {
                 setState(() {
                   selectedChart = newValue!;
                   chartData.clear(); // Reiniciar datos al cambiar métrica
-                  timeCounter = 0;
+                  _setupDatabaseListener(); // Configurar listener para la nueva métrica
                 });
               },
             ),
@@ -162,7 +143,7 @@ class _RealTimeLineChartState extends State<RealTimeLineChart> {
                   autoScrollingDelta: 10,
                 ),
                 primaryYAxis: NumericAxis(
-                  title: AxisTitle(text: selectedChart),
+                  title: AxisTitle(text: selectedChart.replaceAll('/Sensores/', '')),
                   minimum: _getYAxisMin(),
                   maximum: _getYAxisMax(),
                 ),
@@ -190,3 +171,23 @@ class ChartData {
 
   ChartData(this.x, this.y);
 }
+// /Sensores/Vel vehículo -
+// /Sensores/RPM -
+// /Sensores/Carga del motor -
+// /Sensores/Consumo instantáneo combustible
+// /Sensores/Posición acelerador -
+// /Sensores/Presión colector admisión -
+// /Sensores/Presión combustible
+// /Sensores/Sensor MAP 
+// /Sensores/Temperatura aceite
+// /Sensores/Temperatura refrigerante -
+// /Sensores/Tiempo de encendido -
+
+// '/Sensores/Voltaje',
+// '/Sensores/RPM',
+// '/Sensores/Vel vehículo',
+// '/Sensores/Posición acelerador',
+// '/Sensores/Temperatura refrigerante',
+// '/Sensores/Presión colector admisión',
+// '/Sensores/Carga del motor',
+// '/Sensores/Tiempo de encendido',
