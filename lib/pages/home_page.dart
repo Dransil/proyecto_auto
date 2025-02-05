@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:proyecto_auto/pages/dashboard_page.dart';
 import 'package:proyecto_auto/pages/graphs_page.dart';
-import 'package:proyecto_auto/pages/login_page.dart'; // Asegúrate de tener esta página creada
+import 'package:proyecto_auto/pages/infovin.dart';
+import 'package:proyecto_auto/pages/login_page.dart';
+
+final Color colorPrimary = Color(0xFF007AFF); // Azul principal
+final Color colorSecondary = Color(0xFF1E90FF); // Azul más claro
 
 class HomePage extends StatefulWidget {
-  final dynamic user; // Recibe el parámetro user
+  final dynamic user;
 
   const HomePage({Key? key, required this.user}) : super(key: key);
 
@@ -14,7 +18,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   void _logout() {
-    // Aquí puedes agregar lógica adicional para cerrar sesión, como limpiar datos locales o tokens
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(builder: (context) => LoginPage()),
@@ -26,39 +29,40 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Escáner OBD'),
+        title: const Text(
+          'Monitoreo OBD',
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+        ),
+        backgroundColor: colorPrimary,
         actions: [
           IconButton(
             icon: const Icon(Icons.settings),
             onPressed: () {
-              // Aquí puedes manejar configuraciones relacionadas con el usuario
               print("Configuraciones del usuario: \${widget.user}");
             },
           ),
           IconButton(
             icon: const Icon(Icons.logout),
-            onPressed: _logout, // Llama a la función de logout
+            onPressed: _logout,
           ),
         ],
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // Logo
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16.0),
+            padding: const EdgeInsets.symmetric(vertical: 8),
             child: Column(
               children: [
                 Image.asset(
-                  'assets/images/Chevrolet-logo.png',
-                  height: 150,
+                  'assets/images/car.png',
+                  height: 190,
                 ),
                 const SizedBox(height: 8),
               ],
             ),
           ),
           const SizedBox(height: 32),
-          // Botones principales
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: GridView(
@@ -82,7 +86,7 @@ class _HomePageState extends State<HomePage> {
                 ),
                 _HomeButton(
                   icon: Icons.monitor_heart,
-                  label: 'Diagnostico',
+                  label: 'Diagnóstico',
                   onTap: () {
                     Navigator.push(
                       context,
@@ -95,16 +99,21 @@ class _HomePageState extends State<HomePage> {
                   icon: Icons.car_rental,
                   label: 'Información del vehículo',
                   onTap: () {
-                    // Puedes pasar el usuario si es necesario
-                    print("Información del usuario: \${widget.user}");
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => InfoVinPage()),
+                    );
                   },
                 ),
                 _HomeButton(
                   icon: Icons.report,
-                  label: 'Reportes',
+                  label: 'Diagnóstico',
                   onTap: () {
-                    // Lógica para reportes
-                    print("Reportes del usuario: \${widget.user}");
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => RealTimeLineChart()),
+                    );
                   },
                 ),
               ],
@@ -112,6 +121,7 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
+      backgroundColor: Colors.grey[100],
     );
   }
 }
@@ -120,13 +130,11 @@ class _HomeButton extends StatelessWidget {
   final IconData icon;
   final String label;
   final VoidCallback onTap;
-  final Color iconColor;
 
   const _HomeButton({
     required this.icon,
     required this.label,
     required this.onTap,
-    this.iconColor = Colors.black,
     Key? key,
   }) : super(key: key);
 
@@ -136,16 +144,24 @@ class _HomeButton extends StatelessWidget {
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.grey[200],
+          color: colorSecondary,
           borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black26,
+              blurRadius: 5,
+              spreadRadius: 1,
+              offset: Offset(2, 3),
+            ),
+          ],
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
               icon,
-              size: 36,
-              color: iconColor,
+              size: 40,
+              color: Colors.white,
             ),
             const SizedBox(height: 8),
             Text(
@@ -153,6 +169,7 @@ class _HomeButton extends StatelessWidget {
               style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
+                color: Colors.white,
               ),
               textAlign: TextAlign.center,
             ),

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 
+final Color colorPrimary = Color(0xFF007AFF); // Azul principal
+
 class SpeedometerPage extends StatefulWidget {
   const SpeedometerPage({super.key});
 
@@ -36,7 +38,8 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
       final data = event.snapshot.value;
       if (data != null) {
         if (data == "No soportado") {
-          _velocidadNotifier.value = -1; // Valor especial para indicar "No soportado"
+          _velocidadNotifier.value =
+              -1; // Valor especial para indicar "No soportado"
         } else {
           final velocidad = double.tryParse(data.toString()) ?? 0.0;
           _velocidadNotifier.value = velocidad;
@@ -58,18 +61,23 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
       final data = event.snapshot.value;
       if (data != null) {
         if (data == "No soportado") {
-          _cargaMotorNotifier.value = -1; // Valor especial para indicar "No soportado"
+          _cargaMotorNotifier.value =
+              -1; // Valor especial para indicar "No soportado"
         } else {
           final carmotor = double.tryParse(data.toString()) ?? 0.0;
           _cargaMotorNotifier.value = carmotor;
         }
       }
     });
-    _databaseRef.child('/Sensores/Consumo instantáneo combustible').onValue.listen((event) {
+    _databaseRef
+        .child('/Sensores/Consumo instantáneo combustible')
+        .onValue
+        .listen((event) {
       final data = event.snapshot.value;
       if (data != null) {
         if (data == "No soportado") {
-          _cargaInComNotifier.value = -1; // Valor especial para indicar "No soportado"
+          _cargaInComNotifier.value =
+              -1; // Valor especial para indicar "No soportado"
         } else {
           final conincom = double.tryParse(data.toString()) ?? 0.0;
           _cargaInComNotifier.value = conincom;
@@ -80,18 +88,23 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
       final data = event.snapshot.value;
       if (data != null) {
         if (data == "No soportado") {
-          _posiAceNotifier.value = -1; // Valor especial para indicar "No soportado"
+          _posiAceNotifier.value =
+              -1; // Valor especial para indicar "No soportado"
         } else {
           final posace = double.tryParse(data.toString()) ?? 0.0;
           _posiAceNotifier.value = posace;
         }
       }
     });
-    _databaseRef.child('/Sensores/Presión colector admisión').onValue.listen((event) {
+    _databaseRef
+        .child('/Sensores/Presión colector admisión')
+        .onValue
+        .listen((event) {
       final data = event.snapshot.value;
       if (data != null) {
         if (data == "No soportado") {
-          _presColAdmiNotifier.value = -1; // Valor especial para indicar "No soportado"
+          _presColAdmiNotifier.value =
+              -1; // Valor especial para indicar "No soportado"
         } else {
           final prescoladm = double.tryParse(data.toString()) ?? 0.0;
           _presColAdmiNotifier.value = prescoladm;
@@ -102,7 +115,8 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
       final data = event.snapshot.value;
       if (data != null) {
         if (data == "No soportado") {
-          _presComNotifier.value = -1; // Valor especial para indicar "No soportado"
+          _presComNotifier.value =
+              -1; // Valor especial para indicar "No soportado"
         } else {
           final prescom = double.tryParse(data.toString()) ?? 0.0;
           _presComNotifier.value = prescom;
@@ -113,7 +127,8 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
       final data = event.snapshot.value;
       if (data != null) {
         if (data == "No soportado") {
-          _sensorMapNotifier.value = -1; // Valor especial para indicar "No soportado"
+          _sensorMapNotifier.value =
+              -1; // Valor especial para indicar "No soportado"
         } else {
           final sensmap = double.tryParse(data.toString()) ?? 0.0;
           _sensorMapNotifier.value = sensmap;
@@ -124,18 +139,23 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
       final data = event.snapshot.value;
       if (data != null) {
         if (data == "No soportado") {
-          _tempAceNotifier.value = -1; // Valor especial para indicar "No soportado"
+          _tempAceNotifier.value =
+              -1; // Valor especial para indicar "No soportado"
         } else {
           final tempace = double.tryParse(data.toString()) ?? 0.0;
           _tempAceNotifier.value = tempace;
         }
       }
     });
-    _databaseRef.child('/Sensores/Temperatura refrigerante').onValue.listen((event) {
+    _databaseRef
+        .child('/Sensores/Temperatura refrigerante')
+        .onValue
+        .listen((event) {
       final data = event.snapshot.value;
       if (data != null) {
         if (data == "No soportado") {
-          _tempRefNotifier.value = -1; // Valor especial para indicar "No soportado"
+          _tempRefNotifier.value =
+              -1; // Valor especial para indicar "No soportado"
         } else {
           final tempref = double.tryParse(data.toString()) ?? 0.0;
           _tempRefNotifier.value = tempref;
@@ -146,7 +166,8 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
       final data = event.snapshot.value;
       if (data != null) {
         if (data == "No soportado") {
-          _tiemEncNotifier.value = -1; // Valor especial para indicar "No soportado"
+          _tiemEncNotifier.value =
+              -1; // Valor especial para indicar "No soportado"
         } else {
           final tiempen = double.tryParse(data.toString()) ?? 0.0;
           _tiemEncNotifier.value = tiempen;
@@ -183,7 +204,6 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
   }
 
   Widget buildSpeedGauge() {
-    
     return ValueListenableBuilder<double>(
       valueListenable: _velocidadNotifier,
       builder: (context, velocidad, child) {
@@ -457,7 +477,7 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
           ],
         );
       },
-    ); 
+    );
   }
 
   Widget buildConsumoInsComGauge() {
@@ -524,8 +544,9 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
           ],
         );
       },
-    );  
+    );
   }
+
   Widget buildPosiAceGauge() {
     return ValueListenableBuilder<double>(
       valueListenable: _posiAceNotifier,
@@ -590,8 +611,9 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
           ],
         );
       },
-    ); 
+    );
   }
+
   Widget buildPresColAdmGauge() {
     return ValueListenableBuilder<double>(
       valueListenable: _presComNotifier,
@@ -656,8 +678,9 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
           ],
         );
       },
-    ); 
+    );
   }
+
   Widget buildPresComGauge() {
     return ValueListenableBuilder<double>(
       valueListenable: _presComNotifier,
@@ -722,8 +745,9 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
           ],
         );
       },
-    ); 
+    );
   }
+
   Widget buildSensMapGauge() {
     return ValueListenableBuilder<double>(
       valueListenable: _sensorMapNotifier,
@@ -788,8 +812,9 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
           ],
         );
       },
-    ); 
+    );
   }
+
   Widget buildTempAceiteGauge() {
     return ValueListenableBuilder<double>(
       valueListenable: _tempAceNotifier,
@@ -854,7 +879,7 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
           ],
         );
       },
-    ); 
+    );
   }
 
   Widget buildTempRefGauge() {
@@ -921,7 +946,7 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
           ],
         );
       },
-    ); 
+    );
   }
 
   Widget buildTieEncGauge() {
@@ -988,15 +1013,15 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
           ],
         );
       },
-    ); 
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: const Color.fromARGB(255, 188, 188, 188),
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: colorPrimary,
         title: const Text(
           "Dashboard",
           style: TextStyle(
@@ -1018,38 +1043,62 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
             Padding(
               padding:
                   const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-              child: DropdownButton<String>(
-                value: selectedMetric,
-                items: <String>[
-                  'Velocidad',//Sensores/Vel vehículo
-                  'RPM',//Sensores/RPM
-                  'Carga del motor',//Sensores/Carga del motor
-                  'Consumo instantáneo combustible',//Sensores/Consumo instantáneo combustible
-                  'Posición acelerador',//Sensores/Posición acelerador
-                  'Presión colector admisión',//Sensores/Presión colector admisión
-                  'Presión combustible', //Sensores/Presión combustible
-                  'Sensor MAP', //Sensores/Sensor MAP
-                  'Temperatura aceite', //Sensores/Temperatura aceite
-                  'Temperatura refrigerante', //Sensores/Temperatura refrigerante
-                  'Tiempo de encendido', //Sensores/Tiempo de encendido
-                ]
-                    .map((String value) => DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        ))
-                    .toList(),
-                onChanged: (String? newValue) {
-                  setState(() {
-                    selectedMetric = newValue!;
-                  });
-                },
-                isExpanded: true,
-                style: const TextStyle(
-                  fontSize: 16,
-                  color: Colors.black,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                      color: Colors.blueAccent, width: 2), // Borde azul
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black26,
+                      blurRadius: 4,
+                      offset: Offset(2, 2), // Sombra ligera
+                    ),
+                  ],
                 ),
-                dropdownColor: Colors.white,
-                icon: const Icon(Icons.arrow_drop_down),
+                child: DropdownButton<String>(
+                  value: selectedMetric,
+                  items: <String>[
+                    'Velocidad',
+                    'RPM',
+                    'Carga del motor',
+                    'Consumo instantáneo combustible',
+                    'Posición acelerador',
+                    'Presión colector admisión',
+                    'Presión combustible',
+                    'Sensor MAP',
+                    'Temperatura aceite',
+                    'Temperatura refrigerante',
+                    'Tiempo de encendido',
+                  ]
+                      .map((String value) => DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(
+                              value,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black87,
+                              ),
+                            ),
+                          ))
+                      .toList(),
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      selectedMetric = newValue!;
+                    });
+                  },
+                  isExpanded: true,
+                  underline: Container(), // Quita la línea por defecto
+                  icon: const Icon(
+                    Icons.arrow_drop_down,
+                    color: Colors.blueAccent,
+                    size: 28,
+                  ),
+                  dropdownColor: Colors.white,
+                ),
               ),
             ),
             Expanded(

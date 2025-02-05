@@ -7,6 +7,8 @@ class RealTimeLineChart extends StatefulWidget {
   _RealTimeLineChartState createState() => _RealTimeLineChartState();
 }
 
+final Color colorPrimary = Color(0xFF007AFF); // Azul principal
+
 class _RealTimeLineChartState extends State<RealTimeLineChart> {
   List<ChartData> chartData = [];
   late DatabaseReference _databaseRef;
@@ -98,39 +100,74 @@ class _RealTimeLineChartState extends State<RealTimeLineChart> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 188, 188, 188),
       appBar: AppBar(
-        title: Text('Gráfica en Tiempo Real'),
+        backgroundColor: colorPrimary,
+        title: const Text(
+          "Gráfica en tiempo real",
+          style: TextStyle(
+            fontSize: 24,
+            color: Colors.black,
+          ),
+        ),
       ),
       body: Column(
         children: [
           // Dropdown para seleccionar métrica
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: DropdownButton<String>(
-              value: selectedChart,
-              items: <String>[
-                '/Sensores/Voltaje',
-                '/Sensores/RPM',
-                '/Sensores/Carga del motor',
-                '/Sensores/Consumo instantáneo combustible',
-                '/Sensores/Posición acelerador',
-                '/Sensores/Presión colector admisión',
-                '/Sensores/Presión combustible',
-                '/Sensores/Sensor MAP',
-                '/Sensores/Temperatura aceite',
-                '/Sensores/Temperatura refrigerante',
-                '/Sensores/Tiempo de encendido',
-              ].map((String value) => DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value.replaceAll('/Sensores/', '')), // Mostrar nombre sin "/Sensores/"
-                  )).toList(),
-              onChanged: (String? newValue) {
-                setState(() {
-                  selectedChart = newValue!;
-                  chartData.clear(); // Reiniciar datos al cambiar métrica
-                  _setupDatabaseListener(); // Configurar listener para la nueva métrica
-                });
-              },
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                    color: Colors.blueAccent, width: 2), // Borde azul
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black26,
+                    blurRadius: 4,
+                    offset: Offset(2, 2), // Sombra ligera
+                  ),
+                ],
+              ),
+              child: DropdownButton<String>(
+                value: selectedChart,
+                items: <String>[
+                  '/Sensores/Voltaje',
+                  '/Sensores/RPM',
+                  '/Sensores/Carga del motor',
+                  '/Sensores/Consumo instantáneo combustible',
+                  '/Sensores/Posición acelerador',
+                  '/Sensores/Presión colector admisión',
+                  '/Sensores/Presión combustible',
+                  '/Sensores/Sensor MAP',
+                  '/Sensores/Temperatura aceite',
+                  '/Sensores/Temperatura refrigerante',
+                  '/Sensores/Tiempo de encendido',
+                ]
+                    .map((String value) => DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value.replaceAll('/Sensores/',
+                              '')), // Mostrar nombre sin "/Sensores/"
+                        ))
+                    .toList(),
+                onChanged: (String? newValue) {
+                  setState(() {
+                    selectedChart = newValue!;
+                    chartData.clear(); // Reiniciar datos al cambiar métrica
+                    _setupDatabaseListener(); // Configurar listener para la nueva métrica
+                  });
+                },
+                isExpanded: true,
+                underline: Container(), // Quita la línea por defecto
+                icon: const Icon(
+                  Icons.arrow_drop_down,
+                  color: Colors.blueAccent,
+                  size: 28,
+                ),
+                dropdownColor: Colors.white,
+              ),
             ),
           ),
           // Contenedor para la gráfica
@@ -143,7 +180,8 @@ class _RealTimeLineChartState extends State<RealTimeLineChart> {
                   autoScrollingDelta: 10,
                 ),
                 primaryYAxis: NumericAxis(
-                  title: AxisTitle(text: selectedChart.replaceAll('/Sensores/', '')),
+                  title: AxisTitle(
+                      text: selectedChart.replaceAll('/Sensores/', '')),
                   minimum: _getYAxisMin(),
                   maximum: _getYAxisMax(),
                 ),
