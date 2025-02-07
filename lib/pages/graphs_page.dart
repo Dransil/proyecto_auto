@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -13,6 +14,7 @@ class _RealTimeLineChartState extends State<RealTimeLineChart> {
   List<ChartData> chartData = [];
   late DatabaseReference _databaseRef;
   String selectedChart = '/Sensores/Voltaje'; // Opción inicial seleccionada
+  StreamSubscription<DatabaseEvent>? _databaseSubscription; // Listener de Firebase
 
   @override
   void initState() {
@@ -23,7 +25,11 @@ class _RealTimeLineChartState extends State<RealTimeLineChart> {
 
   // Método para configurar el listener de Firebase
   void _setupDatabaseListener() {
-    _databaseRef.child(selectedChart).onValue.listen((event) {
+    // Cancelar el listener anterior si existe
+    _databaseSubscription?.cancel();
+
+    // Configurar un nuevo listener para la métrica seleccionada
+    _databaseSubscription = _databaseRef.child(selectedChart).onValue.listen((event) {
       final data = event.snapshot.value;
       if (data != null) {
         final double newValue = double.tryParse(data.toString()) ?? 0.0;
@@ -41,7 +47,7 @@ class _RealTimeLineChartState extends State<RealTimeLineChart> {
   double _getYAxisMax() {
     switch (selectedChart) {
       case '/Sensores/Voltaje':
-        return 16; // Rango máximo para velocidad del vehículo
+        return 16; // Rango máximo para voltaje
       case '/Sensores/RPM':
         return 7000; // Rango máximo para RPM
       case '/Sensores/Carga del motor':
@@ -71,7 +77,7 @@ class _RealTimeLineChartState extends State<RealTimeLineChart> {
   double _getYAxisMin() {
     switch (selectedChart) {
       case '/Sensores/Voltaje':
-        return 0; // Rango mínimo para velocidad del vehículo
+        return 0; // Rango mínimo para voltaje
       case '/Sensores/RPM':
         return 0; // Rango mínimo para RPM
       case '/Sensores/Carga del motor':
@@ -95,6 +101,13 @@ class _RealTimeLineChartState extends State<RealTimeLineChart> {
       default:
         return 0.0;
     }
+  }
+
+  @override
+  void dispose() {
+    // Cancelar el listener cuando el widget se destruye
+    _databaseSubscription?.cancel();
+    super.dispose();
   }
 
   @override

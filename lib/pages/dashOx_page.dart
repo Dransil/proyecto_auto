@@ -4,27 +4,27 @@ import 'package:syncfusion_flutter_gauges/gauges.dart';
 
 final Color colorPrimary = Color(0xFF007AFF); // Azul principal
 
-class SpeedometerPage extends StatefulWidget {
-  const SpeedometerPage({super.key});
+class DashboardOxPage extends StatefulWidget {
+  const DashboardOxPage({super.key});
 
   @override
-  State<SpeedometerPage> createState() => _SpeedometerPageState();
+  State<DashboardOxPage> createState() => _DashboardOxPageState();
 }
 
-class _SpeedometerPageState extends State<SpeedometerPage> {
-  final ValueNotifier<double> _velocidadNotifier = ValueNotifier(0.0);
-  final ValueNotifier<double> _rpmNotifier = ValueNotifier(0.0);
-  final ValueNotifier<double> _cargaMotorNotifier = ValueNotifier(0.0);
-  final ValueNotifier<double> _cargaInComNotifier = ValueNotifier(0.0);
-  final ValueNotifier<double> _posiAceNotifier = ValueNotifier(0.0);
-  final ValueNotifier<double> _presColAdmiNotifier = ValueNotifier(0.0);
-  final ValueNotifier<double> _presComNotifier = ValueNotifier(0.0);
-  final ValueNotifier<double> _sensorMapNotifier = ValueNotifier(0.0);
-  final ValueNotifier<double> _tempAceNotifier = ValueNotifier(0.0);
-  final ValueNotifier<double> _tempRefNotifier = ValueNotifier(0.0);
-  final ValueNotifier<double> _tiemEncNotifier = ValueNotifier(0.0);
-  final ValueNotifier<double> _voltajeNotifier = ValueNotifier(0.0);
-  String selectedMetric = "Velocidad";
+class _DashboardOxPageState extends State<DashboardOxPage> {
+  final ValueNotifier<double> _sOB1S1Notifier = ValueNotifier(0.0);
+  final ValueNotifier<double> _sOB1S2Notifier = ValueNotifier(0.0);
+  final ValueNotifier<double> _sOB1S3Notifier = ValueNotifier(0.0);
+  final ValueNotifier<double> _sOB1S4Notifier = ValueNotifier(0.0);
+  final ValueNotifier<double> _sOB2S1Notifier = ValueNotifier(0.0);
+  final ValueNotifier<double> _sOB2S2Notifier = ValueNotifier(0.0);
+  final ValueNotifier<double> _sOB2S3Notifier = ValueNotifier(0.0);
+  final ValueNotifier<double> _sOB2S4Notifier = ValueNotifier(0.0);
+  final ValueNotifier<double> _tempCataB1S1Notifier = ValueNotifier(0.0);
+  final ValueNotifier<double> _tempCataB1S2Notifier = ValueNotifier(0.0);
+  final ValueNotifier<double> _tempCataB2S1Notifier = ValueNotifier(0.0);
+  final ValueNotifier<double> _tempCataB2S2Notifier = ValueNotifier(0.0);
+  String selectedMetric = "Sensor oxigeno-B1S1";
   final DatabaseReference _databaseRef = FirebaseDatabase.instance.ref();
 
   @override
@@ -34,156 +34,183 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
   }
 
   void _setupDatabaseListeners() {
-    // Listener para la velocidad
-    _databaseRef.child('/Sensores/Vel vehículo').onValue.listen((event) {
-      final data = event.snapshot.value;
-      if (data != null) {
-        if (data == "No soportado") {
-          _velocidadNotifier.value =
-              -1; // Valor especial para indicar "No soportado"
-        } else {
-          final velocidad = double.tryParse(data.toString()) ?? 0.0;
-          _velocidadNotifier.value = velocidad;
-        }
-      }
-    });
-    _databaseRef.child('/Sensores/RPM').onValue.listen((event) {
-      final data = event.snapshot.value;
-      if (data != null) {
-        if (data == "No soportado") {
-          _rpmNotifier.value = -1; // Valor especial para indicar "No soportado"
-        } else {
-          final rpm = double.tryParse(data.toString()) ?? 0.0;
-          _rpmNotifier.value = rpm;
-        }
-      }
-    });
-    _databaseRef.child('/Sensores/Carga del motor').onValue.listen((event) {
-      final data = event.snapshot.value;
-      if (data != null) {
-        if (data == "No soportado") {
-          _cargaMotorNotifier.value =
-              -1; // Valor especial para indicar "No soportado"
-        } else {
-          final carmotor = double.tryParse(data.toString()) ?? 0.0;
-          _cargaMotorNotifier.value = carmotor;
-        }
-      }
-    });
     _databaseRef
-        .child('/Sensores/Consumo instantáneo combustible')
+        .child('/SensoresOxigeno/Sensor oxigeno-B1S1')
         .onValue
         .listen((event) {
       final data = event.snapshot.value;
       if (data != null) {
         if (data == "No soportado") {
-          _cargaInComNotifier.value =
+          _sOB1S1Notifier.value =
               -1; // Valor especial para indicar "No soportado"
         } else {
-          final conincom = double.tryParse(data.toString()) ?? 0.0;
-          _cargaInComNotifier.value = conincom;
-        }
-      }
-    });
-    _databaseRef.child('/Sensores/Posición acelerador').onValue.listen((event) {
-      final data = event.snapshot.value;
-      if (data != null) {
-        if (data == "No soportado") {
-          _posiAceNotifier.value =
-              -1; // Valor especial para indicar "No soportado"
-        } else {
-          final posace = double.tryParse(data.toString()) ?? 0.0;
-          _posiAceNotifier.value = posace;
+          final sOB1S1 = double.tryParse(data.toString()) ?? 0.0;
+          _sOB1S1Notifier.value = sOB1S1;
         }
       }
     });
     _databaseRef
-        .child('/Sensores/Presión colector admisión')
+        .child('/SensoresOxigeno/Sensor oxigeno-B1S2')
         .onValue
         .listen((event) {
       final data = event.snapshot.value;
       if (data != null) {
         if (data == "No soportado") {
-          _presColAdmiNotifier.value =
+          _sOB1S2Notifier.value =
               -1; // Valor especial para indicar "No soportado"
         } else {
-          final prescoladm = double.tryParse(data.toString()) ?? 0.0;
-          _presColAdmiNotifier.value = prescoladm;
-        }
-      }
-    });
-    _databaseRef.child('/Sensores/Presión combustible').onValue.listen((event) {
-      final data = event.snapshot.value;
-      if (data != null) {
-        if (data == "No soportado") {
-          _presComNotifier.value =
-              -1; // Valor especial para indicar "No soportado"
-        } else {
-          final prescom = double.tryParse(data.toString()) ?? 0.0;
-          _presComNotifier.value = prescom;
-        }
-      }
-    });
-    _databaseRef.child('/Sensores/Sensor MAP').onValue.listen((event) {
-      final data = event.snapshot.value;
-      if (data != null) {
-        if (data == "No soportado") {
-          _sensorMapNotifier.value =
-              -1; // Valor especial para indicar "No soportado"
-        } else {
-          final sensmap = double.tryParse(data.toString()) ?? 0.0;
-          _sensorMapNotifier.value = sensmap;
-        }
-      }
-    });
-    _databaseRef.child('/Sensores/Temperatura aceite').onValue.listen((event) {
-      final data = event.snapshot.value;
-      if (data != null) {
-        if (data == "No soportado") {
-          _tempAceNotifier.value =
-              -1; // Valor especial para indicar "No soportado"
-        } else {
-          final tempace = double.tryParse(data.toString()) ?? 0.0;
-          _tempAceNotifier.value = tempace;
+          final sOB1S2 = double.tryParse(data.toString()) ?? 0.0;
+          _sOB1S2Notifier.value = sOB1S2;
         }
       }
     });
     _databaseRef
-        .child('/Sensores/Temperatura refrigerante')
+        .child('/SensoresOxigeno/Sensor oxigeno-B1S3')
         .onValue
         .listen((event) {
       final data = event.snapshot.value;
       if (data != null) {
         if (data == "No soportado") {
-          _tempRefNotifier.value =
+          _sOB1S3Notifier.value =
               -1; // Valor especial para indicar "No soportado"
         } else {
-          final tempref = double.tryParse(data.toString()) ?? 0.0;
-          _tempRefNotifier.value = tempref;
+          final sOB1S3 = double.tryParse(data.toString()) ?? 0.0;
+          _sOB1S3Notifier.value = sOB1S3;
         }
       }
     });
-    _databaseRef.child('/Sensores/Tiempo de encendido').onValue.listen((event) {
+    _databaseRef
+        .child('/SensoresOxigeno/Sensor oxigeno-B1S4')
+        .onValue
+        .listen((event) {
       final data = event.snapshot.value;
       if (data != null) {
         if (data == "No soportado") {
-          _tiemEncNotifier.value =
+          _sOB1S4Notifier.value =
               -1; // Valor especial para indicar "No soportado"
         } else {
-          final tiempen = double.tryParse(data.toString()) ?? 0.0;
-          _tiemEncNotifier.value = tiempen;
+          final sOB1S4 = double.tryParse(data.toString()) ?? 0.0;
+          _sOB1S4Notifier.value = sOB1S4;
         }
       }
     });
-    _databaseRef.child('/Sensores/Voltaje').onValue.listen((event) {
+    _databaseRef
+        .child('/SensoresOxigeno/Sensor oxigeno-B2S1')
+        .onValue
+        .listen((event) {
       final data = event.snapshot.value;
       if (data != null) {
         if (data == "No soportado") {
-          _voltajeNotifier.value =
+          _sOB2S1Notifier.value =
               -1; // Valor especial para indicar "No soportado"
         } else {
-          final voltaje = double.tryParse(data.toString()) ?? 0.0;
-          _voltajeNotifier.value = voltaje;
+          final sOB2S1 = double.tryParse(data.toString()) ?? 0.0;
+          _sOB1S4Notifier.value = sOB2S1;
+        }
+      }
+    });
+    _databaseRef
+        .child('/SensoresOxigeno/Sensor oxigeno-B2S2')
+        .onValue
+        .listen((event) {
+      final data = event.snapshot.value;
+      if (data != null) {
+        if (data == "No soportado") {
+          _sOB2S2Notifier.value =
+              -1; // Valor especial para indicar "No soportado"
+        } else {
+          final sOB2S2 = double.tryParse(data.toString()) ?? 0.0;
+          _sOB2S2Notifier.value = sOB2S2;
+        }
+      }
+    });
+    _databaseRef
+        .child('/SensoresOxigeno/Sensor oxigeno-B2S3')
+        .onValue
+        .listen((event) {
+      final data = event.snapshot.value;
+      if (data != null) {
+        if (data == "No soportado") {
+          _sOB2S3Notifier.value =
+              -1; // Valor especial para indicar "No soportado"
+        } else {
+          final sOB2S3 = double.tryParse(data.toString()) ?? 0.0;
+          _sOB2S3Notifier.value = sOB2S3;
+        }
+      }
+    });
+    _databaseRef
+        .child('/SensoresOxigeno/Sensor oxigeno-B2S4')
+        .onValue
+        .listen((event) {
+      final data = event.snapshot.value;
+      if (data != null) {
+        if (data == "No soportado") {
+          _sOB2S4Notifier.value =
+              -1; // Valor especial para indicar "No soportado"
+        } else {
+          final sOB2S4 = double.tryParse(data.toString()) ?? 0.0;
+          _sOB2S4Notifier.value = sOB2S4;
+        }
+      }
+    });
+    _databaseRef
+        .child('/SensoresOxigeno/Temp catalizador-B1S1')
+        .onValue
+        .listen((event) {
+      final data = event.snapshot.value;
+      if (data != null) {
+        if (data == "No soportado") {
+          _tempCataB1S1Notifier.value =
+              -1; // Valor especial para indicar "No soportado"
+        } else {
+          final tempCataB1S1 = double.tryParse(data.toString()) ?? 0.0;
+          _tempCataB1S1Notifier.value = tempCataB1S1;
+        }
+      }
+    });
+    _databaseRef
+        .child('/SensoresOxigeno/Temp catalizador-B1S2')
+        .onValue
+        .listen((event) {
+      final data = event.snapshot.value;
+      if (data != null) {
+        if (data == "No soportado") {
+          _tempCataB1S2Notifier.value =
+              -1; // Valor especial para indicar "No soportado"
+        } else {
+          final tempCataB1S2 = double.tryParse(data.toString()) ?? 0.0;
+          _tempCataB1S2Notifier.value = tempCataB1S2;
+        }
+      }
+    });
+    _databaseRef
+        .child('/SensoresOxigeno/Temp catalizador-B2S1')
+        .onValue
+        .listen((event) {
+      final data = event.snapshot.value;
+      if (data != null) {
+        if (data == "No soportado") {
+          _tempCataB2S1Notifier.value =
+              -1; // Valor especial para indicar "No soportado"
+        } else {
+          final tempCataB2S1 = double.tryParse(data.toString()) ?? 0.0;
+          _tempCataB2S1Notifier.value = tempCataB2S1;
+        }
+      }
+    });
+    _databaseRef
+        .child('/SensoresOxigeno/Temp catalizador-B2S2')
+        .onValue
+        .listen((event) {
+      final data = event.snapshot.value;
+      if (data != null) {
+        if (data == "No soportado") {
+          _tempCataB2S2Notifier.value =
+              -1; // Valor especial para indicar "No soportado"
+        } else {
+          final tempCataB2S2 = double.tryParse(data.toString()) ?? 0.0;
+          _tempCataB2S2Notifier.value = tempCataB2S2;
         }
       }
     });
@@ -191,38 +218,38 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
 
   Widget buildGauge() {
     switch (selectedMetric) {
-      case 'RPM':
-        return buildRpmGauge();
-      case 'Carga del motor':
-        return buildCargamotorGauge();
-      case 'Consumo instantáneo combustible':
-        return buildConsumoInsComGauge();
-      case 'Posición acelerador':
-        return buildPosiAceGauge();
-      case 'Presión colector admisión':
-        return buildPresColAdmGauge();
-      case 'Presión combustible':
-        return buildPresComGauge();
-      case 'Sensor MAP':
-        return buildSensMapGauge();
-      case 'Temperatura aceite':
-        return buildTempAceiteGauge();
-      case 'Temperatura refrigerante':
-        return buildTempRefGauge();
-      case 'Tiempo de encendido':
-        return buildTieEncGauge();
-      case 'Voltaje':
-        return buildVoltajeGauge();
+      case 'Sensor oxigeno-B1S2':
+        return buildSOB1S2Gauge();
+      case 'Sensor oxigeno-B1S3':
+        return buildSOB1S3Gauge();
+      case 'Sensor oxigeno-B1S4':
+        return buildSOB1S4Gauge();
+      case 'Sensor oxigeno-B2S1':
+        return buildSOB2S1Gauge();
+      case 'Sensor oxigeno-B2S2':
+        return buildSOB2S2Gauge();
+      case 'Sensor oxigeno-B2S3':
+        return buildSOB2S3Gauge();
+      case 'Sensor oxigeno-B2S4':
+        return buildSOB2S4Gauge();
+      case 'Temp catalizador-B1S1':
+        return buildTCataB1S1Gauge();
+      case 'Temp catalizador-B1S2':
+        return buildTCataB1S2Gauge();
+      case 'Temp catalizador-B2S1':
+        return buildTCataB2S1Gauge();
+      case 'Temp catalizador-B2S2':
+        return buildTCataB2S2Gauge();
       default:
-        return buildSpeedGauge();
+        return buildSOB1S1Gauge();
     }
   }
 
-  Widget buildSpeedGauge() {
+  Widget buildSOB1S1Gauge() {
     return ValueListenableBuilder<double>(
-      valueListenable: _velocidadNotifier,
-      builder: (context, velocidad, child) {
-        if (velocidad == -1) {
+      valueListenable: _sOB1S1Notifier,
+      builder: (context, sOB1S1, child) {
+        if (sOB1S1 == -1) {
           return Center(
             child: Text(
               "No soportado",
@@ -240,7 +267,7 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
               startAngle: 140,
               endAngle: 40,
               minimum: 0,
-              maximum: 240,
+              maximum: 20,
               radiusFactor: 0.9,
               majorTickStyle: const MajorTickStyle(
                 length: 12,
@@ -256,13 +283,8 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
               axisLineStyle: const AxisLineStyle(
                 thickness: 15,
                 gradient: SweepGradient(
-                  colors: [
-                    Colors.green,
-                    Colors.yellow,
-                    Colors.orange,
-                    Colors.red,
-                  ],
-                  stops: [0.25, 0.5, 0.75, 1],
+                  colors: [Colors.green, Colors.yellow, Colors.red],
+                  stops: [0.3, 0.7, 1],
                 ),
               ),
               axisLabelStyle: const GaugeTextStyle(
@@ -271,7 +293,7 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
               ),
               pointers: <GaugePointer>[
                 NeedlePointer(
-                  value: velocidad,
+                  value: sOB1S1,
                   enableAnimation: true,
                   animationType: AnimationType.easeOutBack,
                   needleColor: Colors.red,
@@ -292,43 +314,13 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
                   ),
                 ),
               ],
-              ranges: [
-                GaugeRange(
-                  startValue: 0,
-                  endValue: 30,
-                  color: Colors.pink,
-                  startWidth: 15,
-                  endWidth: 15,
-                ),
-                GaugeRange(
-                  startValue: 30,
-                  endValue: 80,
-                  color: Colors.green,
-                  startWidth: 15,
-                  endWidth: 15,
-                ),
-                GaugeRange(
-                  startValue: 80,
-                  endValue: 160,
-                  color: Colors.amber,
-                  startWidth: 15,
-                  endWidth: 15,
-                ),
-                GaugeRange(
-                  startValue: 160,
-                  endValue: 240,
-                  color: Colors.red,
-                  startWidth: 15,
-                  endWidth: 15,
-                ),
-              ],
               annotations: [
                 GaugeAnnotation(
                   widget: Column(
                     children: [
                       const SizedBox(height: 180),
                       Text(
-                        velocidad.toStringAsFixed(0),
+                        "${sOB1S1.toDouble()}",
                         style: const TextStyle(
                           fontSize: 50,
                           fontWeight: FontWeight.bold,
@@ -342,7 +334,7 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
                         ),
                       ),
                       const Text(
-                        "km/h",
+                        "Sensor oxigeno-B1S1",
                         style: TextStyle(
                           fontSize: 18,
                           color: Colors.black,
@@ -361,11 +353,11 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
     );
   }
 
-  Widget buildRpmGauge() {
+  Widget buildSOB1S2Gauge() {
     return ValueListenableBuilder<double>(
-      valueListenable: _rpmNotifier,
-      builder: (context, rpm, child) {
-        if (rpm == -1) {
+      valueListenable: _sOB1S2Notifier,
+      builder: (context, sOB1S2, child) {
+        if (sOB1S2 == -1) {
           return Center(
             child: Text(
               "No soportado",
@@ -383,7 +375,7 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
               startAngle: 140,
               endAngle: 40,
               minimum: 0,
-              maximum: 8000,
+              maximum: 20,
               radiusFactor: 0.9,
               majorTickStyle: const MajorTickStyle(
                 length: 12,
@@ -399,13 +391,8 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
               axisLineStyle: const AxisLineStyle(
                 thickness: 15,
                 gradient: SweepGradient(
-                  colors: [
-                    Colors.green,
-                    Colors.yellow,
-                    Colors.orange,
-                    Colors.red,
-                  ],
-                  stops: [0.25, 0.5, 0.75, 1],
+                  colors: [Colors.green, Colors.yellow, Colors.red],
+                  stops: [0.3, 0.7, 1],
                 ),
               ),
               axisLabelStyle: const GaugeTextStyle(
@@ -414,7 +401,7 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
               ),
               pointers: <GaugePointer>[
                 NeedlePointer(
-                  value: rpm,
+                  value: sOB1S2,
                   enableAnimation: true,
                   animationType: AnimationType.easeOutBack,
                   needleColor: Colors.red,
@@ -435,42 +422,12 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
                   ),
                 ),
               ],
-              ranges: [
-                GaugeRange(
-                  startValue: 0,
-                  endValue: 2000,
-                  color: Colors.green,
-                  startWidth: 15,
-                  endWidth: 15,
-                ),
-                GaugeRange(
-                  startValue: 2000,
-                  endValue: 5000,
-                  color: Colors.yellow,
-                  startWidth: 15,
-                  endWidth: 15,
-                ),
-                GaugeRange(
-                  startValue: 5000,
-                  endValue: 7000,
-                  color: Colors.orange,
-                  startWidth: 15,
-                  endWidth: 15,
-                ),
-                GaugeRange(
-                  startValue: 7000,
-                  endValue: 8000,
-                  color: Colors.red,
-                  startWidth: 15,
-                  endWidth: 15,
-                ),
-              ],
               annotations: [
                 GaugeAnnotation(
                   widget: Column(
                     children: [
                       const SizedBox(height: 180),
-                      Text(rpm.toStringAsFixed(0),
+                      Text("${sOB1S2.toDouble()}",
                           style: TextStyle(
                             fontSize: 50,
                             fontWeight: FontWeight.bold,
@@ -483,7 +440,7 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
                             ],
                           )),
                       const Text(
-                        "RPM",
+                        "Sensor oxigeno-B1S2",
                         style: TextStyle(
                           fontSize: 18,
                           color: Colors.black,
@@ -502,11 +459,11 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
     );
   }
 
-  Widget buildCargamotorGauge() {
+  Widget buildSOB1S3Gauge() {
     return ValueListenableBuilder<double>(
-      valueListenable: _cargaMotorNotifier,
-      builder: (context, carmotor, child) {
-        if (carmotor == -1) {
+      valueListenable: _sOB1S3Notifier,
+      builder: (context, sOB1S3, child) {
+        if (sOB1S3 == -1) {
           return Center(
             child: Text(
               "No soportado",
@@ -521,11 +478,11 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
         return SfRadialGauge(
           axes: <RadialAxis>[
             RadialAxis(
-              startAngle: 140, // Ángulo de inicio
-              endAngle: 40, // Ángulo de fin
-              minimum: 0, // Valor mínimo (0%)
-              maximum: 100, // Valor máximo (100%)
-              radiusFactor: 0.9, // Tamaño del medidor
+              startAngle: 140,
+              endAngle: 40,
+              minimum: 0,
+              maximum: 20,
+              radiusFactor: 0.9,
               majorTickStyle: const MajorTickStyle(
                 length: 12,
                 thickness: 2,
@@ -540,13 +497,8 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
               axisLineStyle: const AxisLineStyle(
                 thickness: 15,
                 gradient: SweepGradient(
-                  colors: [
-                    Colors.green,
-                    Colors.yellow,
-                    Colors.orange,
-                    Colors.red,
-                  ],
-                  stops: [0.25, 0.5, 0.75, 1],
+                  colors: [Colors.green, Colors.yellow, Colors.red],
+                  stops: [0.3, 0.7, 1],
                 ),
               ),
               axisLabelStyle: const GaugeTextStyle(
@@ -555,7 +507,7 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
               ),
               pointers: <GaugePointer>[
                 NeedlePointer(
-                  value: carmotor,
+                  value: sOB1S3,
                   enableAnimation: true,
                   animationType: AnimationType.easeOutBack,
                   needleColor: Colors.red,
@@ -576,43 +528,13 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
                   ),
                 ),
               ],
-              ranges: [
-                GaugeRange(
-                  startValue: 0,
-                  endValue: 25,
-                  color: Colors.green,
-                  startWidth: 15,
-                  endWidth: 15,
-                ),
-                GaugeRange(
-                  startValue: 25,
-                  endValue: 50,
-                  color: Colors.yellow,
-                  startWidth: 15,
-                  endWidth: 15,
-                ),
-                GaugeRange(
-                  startValue: 50,
-                  endValue: 75,
-                  color: Colors.orange,
-                  startWidth: 15,
-                  endWidth: 15,
-                ),
-                GaugeRange(
-                  startValue: 75,
-                  endValue: 100,
-                  color: Colors.red,
-                  startWidth: 15,
-                  endWidth: 15,
-                ),
-              ],
               annotations: [
                 GaugeAnnotation(
                   widget: Column(
                     children: [
                       const SizedBox(height: 180),
                       Text(
-                        carmotor.toStringAsFixed(0),
+                        "${sOB1S3.toDouble()}",
                         style: const TextStyle(
                           fontSize: 50,
                           fontWeight: FontWeight.bold,
@@ -626,7 +548,7 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
                         ),
                       ),
                       const Text(
-                        "Carga del Motor",
+                        "Sensor oxigeno-B1S3",
                         style: TextStyle(
                           fontSize: 18,
                           color: Colors.black,
@@ -645,11 +567,11 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
     );
   }
 
-  Widget buildConsumoInsComGauge() {
+  Widget buildSOB1S4Gauge() {
     return ValueListenableBuilder<double>(
-      valueListenable: _cargaInComNotifier,
-      builder: (context, conincom, child) {
-        if (conincom == -1) {
+      valueListenable: _sOB1S4Notifier,
+      builder: (context, sOB1S4, child) {
+        if (sOB1S4 == -1) {
           return Center(
             child: Text(
               "No soportado",
@@ -668,7 +590,7 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
               startAngle: 140,
               endAngle: 40,
               minimum: 0,
-              maximum: 30, // Ajustado a un rango más realista
+              maximum: 20,
               radiusFactor: 0.9,
               majorTickStyle: const MajorTickStyle(
                 length: 10,
@@ -684,13 +606,8 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
               axisLineStyle: const AxisLineStyle(
                 thickness: 12,
                 gradient: SweepGradient(
-                  colors: [
-                    Colors.green, // Bajo consumo
-                    Colors.yellow, // Moderado
-                    Colors.orange, // Alto consumo
-                    Colors.red, // Excesivo
-                  ],
-                  stops: [0.15, 0.35, 0.65, 1],
+                  colors: [Colors.green, Colors.yellow, Colors.red],
+                  stops: [0.3, 0.7, 1],
                 ),
               ),
               axisLabelStyle: const GaugeTextStyle(
@@ -699,8 +616,7 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
               ),
               pointers: <GaugePointer>[
                 NeedlePointer(
-                  value:
-                      conincom.clamp(0, 30), // Limita valores fuera del rango
+                  value: sOB1S4.clamp(0, 20),
                   enableAnimation: true,
                   animationType: AnimationType.elasticOut,
                   needleColor: Colors.red,
@@ -718,43 +634,13 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
                   ),
                 ),
               ],
-              ranges: [
-                GaugeRange(
-                  startValue: 0,
-                  endValue: 5,
-                  color: Colors.green,
-                  startWidth: 12,
-                  endWidth: 12,
-                ),
-                GaugeRange(
-                  startValue: 5,
-                  endValue: 10,
-                  color: Colors.yellow,
-                  startWidth: 12,
-                  endWidth: 12,
-                ),
-                GaugeRange(
-                  startValue: 10,
-                  endValue: 20,
-                  color: Colors.orange,
-                  startWidth: 12,
-                  endWidth: 12,
-                ),
-                GaugeRange(
-                  startValue: 20,
-                  endValue: 30,
-                  color: Colors.red,
-                  startWidth: 12,
-                  endWidth: 12,
-                ),
-              ],
               annotations: [
                 GaugeAnnotation(
                   widget: Column(
                     children: [
                       const SizedBox(height: 180),
                       Text(
-                        "${conincom.toStringAsFixed(1)} L/100km",
+                        "${sOB1S4.toDouble()}",
                         style: const TextStyle(
                           fontSize: 45,
                           fontWeight: FontWeight.bold,
@@ -768,7 +654,7 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
                         ),
                       ),
                       const Text(
-                        "Consumo Instantáneo",
+                        "Sensor oxigeno-B1S4",
                         style: TextStyle(
                           fontSize: 18,
                           color: Colors.black,
@@ -787,11 +673,11 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
     );
   }
 
-  Widget buildPosiAceGauge() {
+  Widget buildSOB2S1Gauge() {
     return ValueListenableBuilder<double>(
-      valueListenable: _posiAceNotifier,
-      builder: (context, posace, child) {
-        if (posace == -1) {
+      valueListenable: _sOB2S1Notifier,
+      builder: (context, sOB2S1, child) {
+        if (sOB2S1 == -1) {
           return Center(
             child: Text(
               "No soportado",
@@ -810,8 +696,19 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
               startAngle: 140,
               endAngle: 40,
               minimum: 0,
-              maximum: 100, // 🔹 Ajustado a % real
+              maximum: 20,
               radiusFactor: 0.9,
+              majorTickStyle: const MajorTickStyle(
+                length: 12,
+                thickness: 2,
+                color: Colors.black,
+              ),
+              minorTicksPerInterval: 4,
+              minorTickStyle: const MinorTickStyle(
+                length: 6,
+                thickness: 1,
+                color: Colors.grey,
+              ),
               axisLineStyle: const AxisLineStyle(
                 thickness: 12,
                 gradient: SweepGradient(
@@ -821,7 +718,7 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
               ),
               pointers: <GaugePointer>[
                 NeedlePointer(
-                  value: posace.clamp(0, 100),
+                  value: sOB2S1.clamp(0, 20),
                   enableAnimation: true,
                   animationType: AnimationType.elasticOut,
                   needleColor: Colors.red,
@@ -843,7 +740,7 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
                     children: [
                       const SizedBox(height: 180),
                       Text(
-                        "${posace.toStringAsFixed(0)}%",
+                        "${sOB2S1.toDouble()}",
                         style: const TextStyle(
                           fontSize: 45,
                           fontWeight: FontWeight.bold,
@@ -854,7 +751,7 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
                         ),
                       ),
                       const Text(
-                        "Posición del Acelerador",
+                        "Sensor oxigeno-B2S1",
                         style: TextStyle(fontSize: 18, color: Colors.black),
                       ),
                     ],
@@ -870,11 +767,11 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
     );
   }
 
-  Widget buildPresColAdmGauge() {
+  Widget buildSOB2S2Gauge() {
     return ValueListenableBuilder<double>(
-      valueListenable: _presColAdmiNotifier,
-      builder: (context, prescoladm, child) {
-        if (prescoladm == -1) {
+      valueListenable: _sOB2S2Notifier,
+      builder: (context, sOB2S2, child) {
+        if (sOB2S2 == -1) {
           return Center(
             child: Text(
               "No soportado",
@@ -892,9 +789,20 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
             RadialAxis(
               startAngle: 140,
               endAngle: 40,
-              minimum: 20, // 🔹 Rango realista
-              maximum: 250, // 🔹 MAP puede llegar a 250 kPa en motores turbo
+              minimum: 0,
+              maximum: 20, 
               radiusFactor: 0.9,
+              majorTickStyle: const MajorTickStyle(
+                length: 12,
+                thickness: 2,
+                color: Colors.black,
+              ),
+              minorTicksPerInterval: 4,
+              minorTickStyle: const MinorTickStyle(
+                length: 6,
+                thickness: 1,
+                color: Colors.grey,
+              ),
               axisLineStyle: const AxisLineStyle(
                 thickness: 12,
                 gradient: SweepGradient(
@@ -904,7 +812,7 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
               ),
               pointers: <GaugePointer>[
                 NeedlePointer(
-                  value: prescoladm.clamp(20, 250),
+                  value: sOB2S2.clamp(0, 20),
                   enableAnimation: true,
                   animationType: AnimationType.elasticOut,
                   needleColor: Colors.red,
@@ -926,7 +834,7 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
                     children: [
                       const SizedBox(height: 180),
                       Text(
-                        "${prescoladm.toStringAsFixed(0)} kPa",
+                        "${sOB2S2.toDouble()}",
                         style: const TextStyle(
                           fontSize: 45,
                           fontWeight: FontWeight.bold,
@@ -937,7 +845,7 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
                         ),
                       ),
                       const Text(
-                        "Presión Colector Admisión",
+                        "Sensor oxigeno-B2S2",
                         style: TextStyle(fontSize: 18, color: Colors.black),
                       ),
                     ],
@@ -953,11 +861,11 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
     );
   }
 
-  Widget buildPresComGauge() {
+  Widget buildSOB2S3Gauge() {
     return ValueListenableBuilder<double>(
-      valueListenable: _presComNotifier,
-      builder: (context, prescom, child) {
-        if (prescom == -1) {
+      valueListenable: _sOB2S3Notifier,
+      builder: (context, sOB2S3, child) {
+        if (sOB2S3 == -1) {
           return Center(
             child: Text(
               "No soportado",
@@ -976,8 +884,19 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
               startAngle: 140,
               endAngle: 40,
               minimum: 0,
-              maximum: 500,
+              maximum: 20,
               radiusFactor: 0.9,
+              majorTickStyle: const MajorTickStyle(
+                length: 12,
+                thickness: 2,
+                color: Colors.black,
+              ),
+              minorTicksPerInterval: 4,
+              minorTickStyle: const MinorTickStyle(
+                length: 6,
+                thickness: 1,
+                color: Colors.grey,
+              ),
               axisLineStyle: const AxisLineStyle(
                 thickness: 12,
                 gradient: SweepGradient(
@@ -987,7 +906,7 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
               ),
               pointers: <GaugePointer>[
                 NeedlePointer(
-                  value: prescom.clamp(0, 500),
+                  value: sOB2S3.clamp(0, 20),
                   enableAnimation: true,
                   animationType: AnimationType.elasticOut,
                   needleColor: Colors.red,
@@ -1009,7 +928,7 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
                     children: [
                       const SizedBox(height: 180),
                       Text(
-                        "${prescom.toStringAsFixed(0)} kPa",
+                        "${sOB2S3.toDouble()}",
                         style: const TextStyle(
                           fontSize: 45,
                           fontWeight: FontWeight.bold,
@@ -1020,7 +939,7 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
                         ),
                       ),
                       const Text(
-                        "Presión de Combustible",
+                        "Sensor oxigeno-B2S3",
                         style: TextStyle(fontSize: 18, color: Colors.black),
                       ),
                     ],
@@ -1036,11 +955,11 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
     );
   }
 
-  Widget buildSensMapGauge() {
+  Widget buildSOB2S4Gauge() {
     return ValueListenableBuilder<double>(
-      valueListenable: _sensorMapNotifier,
-      builder: (context, sensmap, child) {
-        if (sensmap == -1) {
+      valueListenable: _sOB2S4Notifier,
+      builder: (context, sOB2S4, child) {
+        if (sOB2S4 == -1) {
           return Center(
             child: Text(
               "No soportado",
@@ -1053,96 +972,25 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
           );
         }
 
-        return SfRadialGauge(
-          axes: <RadialAxis>[
-            RadialAxis(
-              startAngle: 140,
-              endAngle: 40,
-              minimum: 20, // 🔹 Rango realista para Sensor MAP
-              maximum: 250,
-              radiusFactor: 0.9,
-              axisLineStyle: const AxisLineStyle(
-                thickness: 12,
-                gradient: SweepGradient(
-                  colors: [Colors.green, Colors.yellow, Colors.red],
-                  stops: [0.3, 0.7, 1],
-                ),
-              ),
-              pointers: <GaugePointer>[
-                NeedlePointer(
-                  value: sensmap.clamp(20, 250),
-                  enableAnimation: true,
-                  animationType: AnimationType.elasticOut,
-                  needleColor: Colors.red,
-                  needleLength: 0.75,
-                  animationDuration: 1500,
-                  gradient: const LinearGradient(
-                    colors: [Colors.white, Colors.red],
-                  ),
-                  knobStyle: KnobStyle(
-                    color: Colors.transparent,
-                    borderColor: Colors.blue.withAlpha(100),
-                    borderWidth: 1,
-                  ),
-                ),
-              ],
-              annotations: [
-                GaugeAnnotation(
-                  widget: Column(
-                    children: [
-                      const SizedBox(height: 180),
-                      Text(
-                        "${sensmap.toStringAsFixed(0)} kPa",
-                        style: const TextStyle(
-                          fontSize: 45,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.teal,
-                          shadows: [
-                            Shadow(color: Colors.white, blurRadius: 20)
-                          ],
-                        ),
-                      ),
-                      const Text(
-                        "Sensor MAP",
-                        style: TextStyle(fontSize: 18, color: Colors.black),
-                      ),
-                    ],
-                  ),
-                  angle: 90,
-                  positionFactor: 0.75,
-                ),
-              ],
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  Widget buildTempAceiteGauge() {
-    return ValueListenableBuilder<double>(
-      valueListenable: _tempAceNotifier,
-      builder: (context, tempace, child) {
-        if (tempace == -1) {
-          return Center(
-            child: Text(
-              "No soportado",
-              style: TextStyle(
-                fontSize: 40,
-                color: Colors.red,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          );
-        }
         return SfRadialGauge(
           axes: <RadialAxis>[
             RadialAxis(
               startAngle: 140,
               endAngle: 40,
               minimum: 0,
-              maximum: 150,
+              maximum: 20,
               radiusFactor: 0.9,
+              majorTickStyle: const MajorTickStyle(
+                length: 12,
+                thickness: 2,
+                color: Colors.black,
+              ),
+              minorTicksPerInterval: 4,
+              minorTickStyle: const MinorTickStyle(
+                length: 6,
+                thickness: 1,
+                color: Colors.grey,
+              ),
               axisLineStyle: const AxisLineStyle(
                 thickness: 12,
                 gradient: SweepGradient(
@@ -1152,7 +1000,7 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
               ),
               pointers: <GaugePointer>[
                 NeedlePointer(
-                  value: tempace.clamp(20, 250),
+                  value: sOB2S4.clamp(0, 20),
                   enableAnimation: true,
                   animationType: AnimationType.elasticOut,
                   needleColor: Colors.red,
@@ -1174,7 +1022,7 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
                     children: [
                       const SizedBox(height: 180),
                       Text(
-                        "${tempace.toStringAsFixed(0)} C°",
+                        "${sOB2S4.toDouble()}",
                         style: const TextStyle(
                           fontSize: 45,
                           fontWeight: FontWeight.bold,
@@ -1185,7 +1033,7 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
                         ),
                       ),
                       const Text(
-                        "Temperatura del aceite",
+                        "Sensor oxigeno-B2S4",
                         style: TextStyle(fontSize: 18, color: Colors.black),
                       ),
                     ],
@@ -1201,11 +1049,11 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
     );
   }
 
-  Widget buildTempRefGauge() {
+  Widget buildTCataB1S1Gauge() {
     return ValueListenableBuilder<double>(
-      valueListenable: _tempRefNotifier,
-      builder: (context, tempref, child) {
-        if (tempref == -1) {
+      valueListenable: _tempCataB1S1Notifier,
+      builder: (context, tempCataB1S1, child) {
+        if (tempCataB1S1 == -1) {
           return Center(
             child: Text(
               "No soportado",
@@ -1217,14 +1065,26 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
             ),
           );
         }
+
         return SfRadialGauge(
           axes: <RadialAxis>[
             RadialAxis(
               startAngle: 140,
               endAngle: 40,
-              minimum: 40,
-              maximum: 150,
+              minimum: 0,
+              maximum: 20,
               radiusFactor: 0.9,
+              majorTickStyle: const MajorTickStyle(
+                length: 12,
+                thickness: 2,
+                color: Colors.black,
+              ),
+              minorTicksPerInterval: 4,
+              minorTickStyle: const MinorTickStyle(
+                length: 6,
+                thickness: 1,
+                color: Colors.grey,
+              ),
               axisLineStyle: const AxisLineStyle(
                 thickness: 12,
                 gradient: SweepGradient(
@@ -1234,7 +1094,7 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
               ),
               pointers: <GaugePointer>[
                 NeedlePointer(
-                  value: tempref.clamp(20, 250),
+                  value: tempCataB1S1.clamp(0, 20),
                   enableAnimation: true,
                   animationType: AnimationType.elasticOut,
                   needleColor: Colors.red,
@@ -1256,7 +1116,7 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
                     children: [
                       const SizedBox(height: 180),
                       Text(
-                        "${tempref.toStringAsFixed(0)} C°",
+                        "${tempCataB1S1.toDouble()}",
                         style: const TextStyle(
                           fontSize: 45,
                           fontWeight: FontWeight.bold,
@@ -1267,7 +1127,7 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
                         ),
                       ),
                       const Text(
-                        "Temperatura refrigerante",
+                        "Temp catalizador-B1S1",
                         style: TextStyle(fontSize: 18, color: Colors.black),
                       ),
                     ],
@@ -1283,11 +1143,11 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
     );
   }
 
-  Widget buildTieEncGauge() {
+  Widget buildTCataB1S2Gauge() {
     return ValueListenableBuilder<double>(
-      valueListenable: _tiemEncNotifier,
-      builder: (context, tiempen, child) {
-        if (tiempen == -11) {
+      valueListenable: _tempCataB1S2Notifier,
+      builder: (context, tempCataB1S2, child) {
+        if (tempCataB1S2 == -1) {
           return Center(
             child: Text(
               "No soportado",
@@ -1299,13 +1159,14 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
             ),
           );
         }
+
         return SfRadialGauge(
           axes: <RadialAxis>[
             RadialAxis(
               startAngle: 140,
               endAngle: 40,
-              minimum: -10,
-              maximum: 50,
+              minimum: 0,
+              maximum: 20,
               radiusFactor: 0.9,
               majorTickStyle: const MajorTickStyle(
                 length: 12,
@@ -1325,25 +1186,16 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
                   stops: [0.3, 0.7, 1],
                 ),
               ),
-              axisLabelStyle: const GaugeTextStyle(
-                fontSize: 14,
-                color: Colors.black,
-              ),
               pointers: <GaugePointer>[
                 NeedlePointer(
-                  value: tiempen.clamp(0, 50),
+                  value: tempCataB1S2.clamp(0, 20),
                   enableAnimation: true,
-                  animationType: AnimationType.easeOutBack,
+                  animationType: AnimationType.elasticOut,
                   needleColor: Colors.red,
-                  needleStartWidth: 1,
-                  needleEndWidth: 5,
                   needleLength: 0.75,
-                  animationDuration: 2000,
+                  animationDuration: 1500,
                   gradient: const LinearGradient(
-                    colors: [
-                      Colors.white,
-                      Colors.red,
-                    ],
+                    colors: [Colors.white, Colors.red],
                   ),
                   knobStyle: KnobStyle(
                     color: Colors.transparent,
@@ -1358,31 +1210,25 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
                     children: [
                       const SizedBox(height: 180),
                       Text(
-                        "${tiempen.toStringAsFixed(0)} °",
-                        style: TextStyle(
-                          fontSize: 50,
+                        "${tempCataB1S2.toDouble()}",
+                        style: const TextStyle(
+                          fontSize: 45,
                           fontWeight: FontWeight.bold,
                           color: Colors.teal,
                           shadows: [
-                            Shadow(
-                              color: Colors.white,
-                              blurRadius: 20,
-                            ),
+                            Shadow(color: Colors.white, blurRadius: 20)
                           ],
                         ),
                       ),
                       const Text(
-                        "Tiempo de Encendido",
-                        style: TextStyle(
-                          fontSize: 18,
-                          color: Colors.black,
-                        ),
+                        "Temp catalizador-B1S2",
+                        style: TextStyle(fontSize: 18, color: Colors.black),
                       ),
                     ],
                   ),
                   angle: 90,
                   positionFactor: 0.75,
-                )
+                ),
               ],
             ),
           ],
@@ -1391,11 +1237,11 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
     );
   }
 
-  Widget buildVoltajeGauge() {
+  Widget buildTCataB2S1Gauge() {
     return ValueListenableBuilder<double>(
-      valueListenable: _voltajeNotifier,
-      builder: (context, voltaje, child) {
-        if (voltaje == -1) {
+      valueListenable: _tempCataB2S1Notifier,
+      builder: (context, tempCataB2S1, child) {
+        if (tempCataB2S1 == -1) {
           return Center(
             child: Text(
               "No soportado",
@@ -1407,13 +1253,14 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
             ),
           );
         }
+
         return SfRadialGauge(
           axes: <RadialAxis>[
             RadialAxis(
               startAngle: 140,
               endAngle: 40,
-              minimum: 6,
-              maximum: 18,
+              minimum: 0,
+              maximum: 20,
               radiusFactor: 0.9,
               majorTickStyle: const MajorTickStyle(
                 length: 12,
@@ -1427,35 +1274,22 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
                 color: Colors.grey,
               ),
               axisLineStyle: const AxisLineStyle(
-                thickness: 15,
+                thickness: 12,
                 gradient: SweepGradient(
-                  colors: [
-                    Colors.red,
-                    Colors.green,
-                    Colors.red,
-                  ],
-                  stops: [1 ,1, 1],
+                  colors: [Colors.red, Colors.yellow, Colors.green],
+                  stops: [0.3, 0.7, 1],
                 ),
-              ),
-              axisLabelStyle: const GaugeTextStyle(
-                fontSize: 14,
-                color: Colors.black,
               ),
               pointers: <GaugePointer>[
                 NeedlePointer(
-                  value: voltaje,
+                  value: tempCataB2S1.clamp(0, 20),
                   enableAnimation: true,
-                  animationType: AnimationType.easeOutBack,
+                  animationType: AnimationType.elasticOut,
                   needleColor: Colors.red,
-                  needleStartWidth: 1,
-                  needleEndWidth: 5,
                   needleLength: 0.75,
-                  animationDuration: 2000,
+                  animationDuration: 1500,
                   gradient: const LinearGradient(
-                    colors: [
-                      Colors.white,
-                      Colors.red,
-                    ],
+                    colors: [Colors.white, Colors.red],
                   ),
                   knobStyle: KnobStyle(
                     color: Colors.transparent,
@@ -1464,27 +1298,98 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
                   ),
                 ),
               ],
-              ranges: [
-                GaugeRange(
-                  startValue: 0,
-                  endValue: 8,
-                  color: Colors.red,
-                  startWidth: 15,
-                  endWidth: 15,
+              annotations: [
+                GaugeAnnotation(
+                  widget: Column(
+                    children: [
+                      const SizedBox(height: 180),
+                      Text(
+                        "${tempCataB2S1.toDouble()}",
+                        style: const TextStyle(
+                          fontSize: 45,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.teal,
+                          shadows: [
+                            Shadow(color: Colors.white, blurRadius: 20)
+                          ],
+                        ),
+                      ),
+                      const Text(
+                        "Temp catalizador-B2S1",
+                        style: TextStyle(fontSize: 18, color: Colors.black),
+                      ),
+                    ],
+                  ),
+                  angle: 90,
+                  positionFactor: 0.75,
                 ),
-                GaugeRange(
-                  startValue: 10,
-                  endValue: 14,
-                  color: Colors.green,
-                  startWidth: 15,
-                  endWidth: 15,
+              ],
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget buildTCataB2S2Gauge() {
+    return ValueListenableBuilder<double>(
+      valueListenable: _tempCataB2S2Notifier,
+      builder: (context, tempCataB2S2, child) {
+        if (tempCataB2S2 == -1) {
+          return Center(
+            child: Text(
+              "No soportado",
+              style: TextStyle(
+                fontSize: 40,
+                color: Colors.red,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          );
+        }
+
+        return SfRadialGauge(
+          axes: <RadialAxis>[
+            RadialAxis(
+              startAngle: 140,
+              endAngle: 40,
+              minimum: 0,
+              maximum: 20,
+              radiusFactor: 0.9,
+              majorTickStyle: const MajorTickStyle(
+                length: 12,
+                thickness: 2,
+                color: Colors.black,
+              ),
+              minorTicksPerInterval: 4,
+              minorTickStyle: const MinorTickStyle(
+                length: 6,
+                thickness: 1,
+                color: Colors.grey,
+              ),
+              axisLineStyle: const AxisLineStyle(
+                thickness: 12,
+                gradient: SweepGradient(
+                  colors: [Colors.green, Colors.yellow, Colors.red],
+                  stops: [0.3, 0.7, 1],
                 ),
-                GaugeRange(
-                  startValue: 14,
-                  endValue: 18,
-                  color: Colors.red,
-                  startWidth: 15,
-                  endWidth: 15,
+              ),
+              pointers: <GaugePointer>[
+                NeedlePointer(
+                  value: tempCataB2S2.clamp(0, 20),
+                  enableAnimation: true,
+                  animationType: AnimationType.elasticOut,
+                  needleColor: Colors.red,
+                  needleLength: 0.75,
+                  animationDuration: 1500,
+                  gradient: const LinearGradient(
+                    colors: [Colors.white, Colors.red],
+                  ),
+                  knobStyle: KnobStyle(
+                    color: Colors.transparent,
+                    borderColor: Colors.blue.withAlpha(100),
+                    borderWidth: 1,
+                  ),
                 ),
               ],
               annotations: [
@@ -1492,30 +1397,26 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
                   widget: Column(
                     children: [
                       const SizedBox(height: 180),
-                      Text("${voltaje.toDouble()} V",
-                          style: TextStyle(
-                            fontSize: 50,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.teal,
-                            shadows: [
-                              Shadow(
-                                color: Colors.white,
-                                blurRadius: 20,
-                              ),
-                            ],
-                          )),
-                      const Text(
-                        "Voltaje",
-                        style: TextStyle(
-                          fontSize: 18,
-                          color: Colors.black,
+                      Text(
+                        "${tempCataB2S2.toDouble()}",
+                        style: const TextStyle(
+                          fontSize: 45,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.teal,
+                          shadows: [
+                            Shadow(color: Colors.white, blurRadius: 20)
+                          ],
                         ),
+                      ),
+                      const Text(
+                        "Temp catalizador-B2S2",
+                        style: TextStyle(fontSize: 18, color: Colors.black),
                       ),
                     ],
                   ),
                   angle: 90,
                   positionFactor: 0.75,
-                )
+                ),
               ],
             ),
           ],
@@ -1556,31 +1457,30 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                      color: Colors.blueAccent, width: 2), // Borde azul
+                  border: Border.all(color: Colors.blueAccent, width: 2),
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black26,
                       blurRadius: 4,
-                      offset: Offset(2, 2), // Sombra ligera
+                      offset: Offset(2, 2),
                     ),
                   ],
                 ),
                 child: DropdownButton<String>(
                   value: selectedMetric,
                   items: <String>[
-                    'Velocidad',
-                    'RPM',
-                    'Carga del motor',
-                    'Consumo instantáneo combustible',
-                    'Posición acelerador',
-                    'Presión colector admisión',
-                    'Presión combustible',
-                    'Sensor MAP',
-                    'Temperatura aceite',
-                    'Temperatura refrigerante',
-                    'Tiempo de encendido',
-                    'Voltaje',
+                    'Sensor oxigeno-B1S1',
+                    'Sensor oxigeno-B1S2',
+                    'Sensor oxigeno-B1S3',
+                    'Sensor oxigeno-B1S4',
+                    'Sensor oxigeno-B2S1',
+                    'Sensor oxigeno-B2S2',
+                    'Sensor oxigeno-B2S3',
+                    'Sensor oxigeno-B2S4',
+                    'Temp catalizador-B1S1',
+                    'Temp catalizador-B1S2',
+                    'Temp catalizador-B2S1',
+                    'Temp catalizador-B2S2',
                   ]
                       .map((String value) => DropdownMenuItem<String>(
                             value: value,

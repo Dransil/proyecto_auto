@@ -4,27 +4,24 @@ import 'package:syncfusion_flutter_gauges/gauges.dart';
 
 final Color colorPrimary = Color(0xFF007AFF); // Azul principal
 
-class SpeedometerPage extends StatefulWidget {
-  const SpeedometerPage({super.key});
+class DashboardCombPage extends StatefulWidget {
+  const DashboardCombPage({super.key});
 
   @override
-  State<SpeedometerPage> createState() => _SpeedometerPageState();
+  State<DashboardCombPage> createState() => _DashboardCombPageState();
 }
 
-class _SpeedometerPageState extends State<SpeedometerPage> {
-  final ValueNotifier<double> _velocidadNotifier = ValueNotifier(0.0);
-  final ValueNotifier<double> _rpmNotifier = ValueNotifier(0.0);
-  final ValueNotifier<double> _cargaMotorNotifier = ValueNotifier(0.0);
-  final ValueNotifier<double> _cargaInComNotifier = ValueNotifier(0.0);
-  final ValueNotifier<double> _posiAceNotifier = ValueNotifier(0.0);
-  final ValueNotifier<double> _presColAdmiNotifier = ValueNotifier(0.0);
-  final ValueNotifier<double> _presComNotifier = ValueNotifier(0.0);
-  final ValueNotifier<double> _sensorMapNotifier = ValueNotifier(0.0);
-  final ValueNotifier<double> _tempAceNotifier = ValueNotifier(0.0);
-  final ValueNotifier<double> _tempRefNotifier = ValueNotifier(0.0);
-  final ValueNotifier<double> _tiemEncNotifier = ValueNotifier(0.0);
+class _DashboardCombPageState extends State<DashboardCombPage> {
+  final ValueNotifier<double> _conInsComNotifier = ValueNotifier(0.0);
+  final ValueNotifier<double> _estSisComNotifier = ValueNotifier(0.0);
+  final ValueNotifier<double> _nivComNotifier = ValueNotifier(0.0);
+  final ValueNotifier<double> _porEtaComNotifier = ValueNotifier(0.0);
+  final ValueNotifier<double> _presRielDirNotifier = ValueNotifier(0.0);
+  final ValueNotifier<double> _presRielRelNotifier = ValueNotifier(0.0);
+  final ValueNotifier<double> _presBomComNotifier = ValueNotifier(0.0);
+  final ValueNotifier<double> _tipoComNotifier = ValueNotifier(0.0);
   final ValueNotifier<double> _voltajeNotifier = ValueNotifier(0.0);
-  String selectedMetric = "Velocidad";
+  String selectedMetric = "Consumo instantáneo de combustible";
   final DatabaseReference _databaseRef = FirebaseDatabase.instance.ref();
 
   @override
@@ -34,148 +31,108 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
   }
 
   void _setupDatabaseListeners() {
-    // Listener para la velocidad
-    _databaseRef.child('/Sensores/Vel vehículo').onValue.listen((event) {
+    _databaseRef.child('/SensoresCombustible/Consumo instantáneo de combustible').onValue.listen((event) {
       final data = event.snapshot.value;
       if (data != null) {
         if (data == "No soportado") {
-          _velocidadNotifier.value =
+          _conInsComNotifier.value =
               -1; // Valor especial para indicar "No soportado"
         } else {
-          final velocidad = double.tryParse(data.toString()) ?? 0.0;
-          _velocidadNotifier.value = velocidad;
+          final conInsCom = double.tryParse(data.toString()) ?? 0.0;
+          _conInsComNotifier.value = conInsCom;
         }
       }
     });
-    _databaseRef.child('/Sensores/RPM').onValue.listen((event) {
+    _databaseRef.child('/SensoresCombustible/Estado del sistema de combustible').onValue.listen((event) {
       final data = event.snapshot.value;
       if (data != null) {
         if (data == "No soportado") {
-          _rpmNotifier.value = -1; // Valor especial para indicar "No soportado"
+          _estSisComNotifier.value = -1; // Valor especial para indicar "No soportado"
         } else {
-          final rpm = double.tryParse(data.toString()) ?? 0.0;
-          _rpmNotifier.value = rpm;
+          final estSisCom = double.tryParse(data.toString()) ?? 0.0;
+          _estSisComNotifier.value = estSisCom;
         }
       }
     });
-    _databaseRef.child('/Sensores/Carga del motor').onValue.listen((event) {
+    _databaseRef.child('/SensoresCombustible/Nivel de combustible').onValue.listen((event) {
       final data = event.snapshot.value;
       if (data != null) {
         if (data == "No soportado") {
-          _cargaMotorNotifier.value =
+          _nivComNotifier.value =
               -1; // Valor especial para indicar "No soportado"
         } else {
-          final carmotor = double.tryParse(data.toString()) ?? 0.0;
-          _cargaMotorNotifier.value = carmotor;
+          final nivCom = double.tryParse(data.toString()) ?? 0.0;
+          _nivComNotifier.value = nivCom;
         }
       }
     });
     _databaseRef
-        .child('/Sensores/Consumo instantáneo combustible')
+        .child('/SensoresCombustible/Porcentaje etanol en combustible')
         .onValue
         .listen((event) {
       final data = event.snapshot.value;
       if (data != null) {
         if (data == "No soportado") {
-          _cargaInComNotifier.value =
+          _porEtaComNotifier.value =
               -1; // Valor especial para indicar "No soportado"
         } else {
-          final conincom = double.tryParse(data.toString()) ?? 0.0;
-          _cargaInComNotifier.value = conincom;
+          final porEtaCom = double.tryParse(data.toString()) ?? 0.0;
+          _porEtaComNotifier.value = porEtaCom;
         }
       }
     });
-    _databaseRef.child('/Sensores/Posición acelerador').onValue.listen((event) {
+    _databaseRef.child('/SensoresCombustible/Presion Riel combustible directa').onValue.listen((event) {
       final data = event.snapshot.value;
       if (data != null) {
         if (data == "No soportado") {
-          _posiAceNotifier.value =
+          _presRielDirNotifier.value =
               -1; // Valor especial para indicar "No soportado"
         } else {
-          final posace = double.tryParse(data.toString()) ?? 0.0;
-          _posiAceNotifier.value = posace;
+          final presRielDir = double.tryParse(data.toString()) ?? 0.0;
+          _presRielDirNotifier.value = presRielDir;
         }
       }
     });
     _databaseRef
-        .child('/Sensores/Presión colector admisión')
+        .child('/SensoresCombustible/Presion Riel combustible relativa')
         .onValue
         .listen((event) {
       final data = event.snapshot.value;
       if (data != null) {
         if (data == "No soportado") {
-          _presColAdmiNotifier.value =
+          _presRielRelNotifier.value =
               -1; // Valor especial para indicar "No soportado"
         } else {
-          final prescoladm = double.tryParse(data.toString()) ?? 0.0;
-          _presColAdmiNotifier.value = prescoladm;
+          final presRielRel = double.tryParse(data.toString()) ?? 0.0;
+          _presRielRelNotifier.value = presRielRel;
         }
       }
     });
-    _databaseRef.child('/Sensores/Presión combustible').onValue.listen((event) {
+    _databaseRef.child('/SensoresCombustible/Presión de la bomba de combustible').onValue.listen((event) {
       final data = event.snapshot.value;
       if (data != null) {
         if (data == "No soportado") {
-          _presComNotifier.value =
+          _presBomComNotifier.value =
               -1; // Valor especial para indicar "No soportado"
         } else {
-          final prescom = double.tryParse(data.toString()) ?? 0.0;
-          _presComNotifier.value = prescom;
+          final presBomCom = double.tryParse(data.toString()) ?? 0.0;
+          _presBomComNotifier.value = presBomCom;
         }
       }
     });
-    _databaseRef.child('/Sensores/Sensor MAP').onValue.listen((event) {
+    _databaseRef.child('/SensoresCombustible/Tipo combustible').onValue.listen((event) {
       final data = event.snapshot.value;
       if (data != null) {
         if (data == "No soportado") {
-          _sensorMapNotifier.value =
+          _tipoComNotifier.value =
               -1; // Valor especial para indicar "No soportado"
         } else {
-          final sensmap = double.tryParse(data.toString()) ?? 0.0;
-          _sensorMapNotifier.value = sensmap;
+          final tipoCom = double.tryParse(data.toString()) ?? 0.0;
+          _tipoComNotifier.value = tipoCom;
         }
       }
     });
-    _databaseRef.child('/Sensores/Temperatura aceite').onValue.listen((event) {
-      final data = event.snapshot.value;
-      if (data != null) {
-        if (data == "No soportado") {
-          _tempAceNotifier.value =
-              -1; // Valor especial para indicar "No soportado"
-        } else {
-          final tempace = double.tryParse(data.toString()) ?? 0.0;
-          _tempAceNotifier.value = tempace;
-        }
-      }
-    });
-    _databaseRef
-        .child('/Sensores/Temperatura refrigerante')
-        .onValue
-        .listen((event) {
-      final data = event.snapshot.value;
-      if (data != null) {
-        if (data == "No soportado") {
-          _tempRefNotifier.value =
-              -1; // Valor especial para indicar "No soportado"
-        } else {
-          final tempref = double.tryParse(data.toString()) ?? 0.0;
-          _tempRefNotifier.value = tempref;
-        }
-      }
-    });
-    _databaseRef.child('/Sensores/Tiempo de encendido').onValue.listen((event) {
-      final data = event.snapshot.value;
-      if (data != null) {
-        if (data == "No soportado") {
-          _tiemEncNotifier.value =
-              -1; // Valor especial para indicar "No soportado"
-        } else {
-          final tiempen = double.tryParse(data.toString()) ?? 0.0;
-          _tiemEncNotifier.value = tiempen;
-        }
-      }
-    });
-    _databaseRef.child('/Sensores/Voltaje').onValue.listen((event) {
+    _databaseRef.child('/SensoresCombustible/Voltaje').onValue.listen((event) {
       final data = event.snapshot.value;
       if (data != null) {
         if (data == "No soportado") {
@@ -191,38 +148,32 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
 
   Widget buildGauge() {
     switch (selectedMetric) {
-      case 'RPM':
-        return buildRpmGauge();
-      case 'Carga del motor':
-        return buildCargamotorGauge();
-      case 'Consumo instantáneo combustible':
-        return buildConsumoInsComGauge();
-      case 'Posición acelerador':
-        return buildPosiAceGauge();
-      case 'Presión colector admisión':
-        return buildPresColAdmGauge();
-      case 'Presión combustible':
-        return buildPresComGauge();
-      case 'Sensor MAP':
-        return buildSensMapGauge();
-      case 'Temperatura aceite':
-        return buildTempAceiteGauge();
-      case 'Temperatura refrigerante':
-        return buildTempRefGauge();
-      case 'Tiempo de encendido':
-        return buildTieEncGauge();
+      case 'Estado del sistema de combustible':
+        return buildEstSisComGauge();
+      case 'Nivel de combustible':
+        return buildNivComGauge();
+      case 'Porcentaje etanol en combustible':
+        return buildPorEtaComGauge();
+      case 'Presion Riel combustible directa':
+        return buildPresRielDirGauge();
+      case 'Presion Riel combustible relativa':
+        return buildPresRielRelGauge();
+      case 'Presión de la bomba de combustible':
+        return buildPresBomComGauge();
+      case 'Tipo combustible':
+        return buildTipoComGauge();
       case 'Voltaje':
         return buildVoltajeGauge();
       default:
-        return buildSpeedGauge();
+        return buildConInsComGauge();
     }
   }
 
-  Widget buildSpeedGauge() {
+  Widget buildConInsComGauge() {
     return ValueListenableBuilder<double>(
-      valueListenable: _velocidadNotifier,
-      builder: (context, velocidad, child) {
-        if (velocidad == -1) {
+      valueListenable: _conInsComNotifier,
+      builder: (context, conInsCom, child) {
+        if (conInsCom == -1) {
           return Center(
             child: Text(
               "No soportado",
@@ -240,7 +191,7 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
               startAngle: 140,
               endAngle: 40,
               minimum: 0,
-              maximum: 240,
+              maximum: 30,
               radiusFactor: 0.9,
               majorTickStyle: const MajorTickStyle(
                 length: 12,
@@ -256,13 +207,8 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
               axisLineStyle: const AxisLineStyle(
                 thickness: 15,
                 gradient: SweepGradient(
-                  colors: [
-                    Colors.green,
-                    Colors.yellow,
-                    Colors.orange,
-                    Colors.red,
-                  ],
-                  stops: [0.25, 0.5, 0.75, 1],
+                  colors: [Colors.green, Colors.yellow, Colors.red],
+                  stops: [0.3, 0.7, 1],
                 ),
               ),
               axisLabelStyle: const GaugeTextStyle(
@@ -271,7 +217,7 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
               ),
               pointers: <GaugePointer>[
                 NeedlePointer(
-                  value: velocidad,
+                  value: conInsCom,
                   enableAnimation: true,
                   animationType: AnimationType.easeOutBack,
                   needleColor: Colors.red,
@@ -292,43 +238,13 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
                   ),
                 ),
               ],
-              ranges: [
-                GaugeRange(
-                  startValue: 0,
-                  endValue: 30,
-                  color: Colors.pink,
-                  startWidth: 15,
-                  endWidth: 15,
-                ),
-                GaugeRange(
-                  startValue: 30,
-                  endValue: 80,
-                  color: Colors.green,
-                  startWidth: 15,
-                  endWidth: 15,
-                ),
-                GaugeRange(
-                  startValue: 80,
-                  endValue: 160,
-                  color: Colors.amber,
-                  startWidth: 15,
-                  endWidth: 15,
-                ),
-                GaugeRange(
-                  startValue: 160,
-                  endValue: 240,
-                  color: Colors.red,
-                  startWidth: 15,
-                  endWidth: 15,
-                ),
-              ],
               annotations: [
                 GaugeAnnotation(
                   widget: Column(
                     children: [
                       const SizedBox(height: 180),
                       Text(
-                        velocidad.toStringAsFixed(0),
+                        conInsCom.toStringAsFixed(0),
                         style: const TextStyle(
                           fontSize: 50,
                           fontWeight: FontWeight.bold,
@@ -342,7 +258,7 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
                         ),
                       ),
                       const Text(
-                        "km/h",
+                        "Consumo Instantaneo de Combustible",
                         style: TextStyle(
                           fontSize: 18,
                           color: Colors.black,
@@ -361,11 +277,11 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
     );
   }
 
-  Widget buildRpmGauge() {
+  Widget buildEstSisComGauge() {
     return ValueListenableBuilder<double>(
-      valueListenable: _rpmNotifier,
-      builder: (context, rpm, child) {
-        if (rpm == -1) {
+      valueListenable: _estSisComNotifier,
+      builder: (context, estSisCom, child) {
+        if (estSisCom == -1) {
           return Center(
             child: Text(
               "No soportado",
@@ -383,7 +299,7 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
               startAngle: 140,
               endAngle: 40,
               minimum: 0,
-              maximum: 8000,
+              maximum: 100,
               radiusFactor: 0.9,
               majorTickStyle: const MajorTickStyle(
                 length: 12,
@@ -399,13 +315,8 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
               axisLineStyle: const AxisLineStyle(
                 thickness: 15,
                 gradient: SweepGradient(
-                  colors: [
-                    Colors.green,
-                    Colors.yellow,
-                    Colors.orange,
-                    Colors.red,
-                  ],
-                  stops: [0.25, 0.5, 0.75, 1],
+                  colors: [Colors.green, Colors.yellow, Colors.red],
+                  stops: [0.3, 0.7, 1],
                 ),
               ),
               axisLabelStyle: const GaugeTextStyle(
@@ -414,7 +325,7 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
               ),
               pointers: <GaugePointer>[
                 NeedlePointer(
-                  value: rpm,
+                  value: estSisCom,
                   enableAnimation: true,
                   animationType: AnimationType.easeOutBack,
                   needleColor: Colors.red,
@@ -435,42 +346,12 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
                   ),
                 ),
               ],
-              ranges: [
-                GaugeRange(
-                  startValue: 0,
-                  endValue: 2000,
-                  color: Colors.green,
-                  startWidth: 15,
-                  endWidth: 15,
-                ),
-                GaugeRange(
-                  startValue: 2000,
-                  endValue: 5000,
-                  color: Colors.yellow,
-                  startWidth: 15,
-                  endWidth: 15,
-                ),
-                GaugeRange(
-                  startValue: 5000,
-                  endValue: 7000,
-                  color: Colors.orange,
-                  startWidth: 15,
-                  endWidth: 15,
-                ),
-                GaugeRange(
-                  startValue: 7000,
-                  endValue: 8000,
-                  color: Colors.red,
-                  startWidth: 15,
-                  endWidth: 15,
-                ),
-              ],
               annotations: [
                 GaugeAnnotation(
                   widget: Column(
                     children: [
                       const SizedBox(height: 180),
-                      Text(rpm.toStringAsFixed(0),
+                      Text(estSisCom.toStringAsFixed(0),
                           style: TextStyle(
                             fontSize: 50,
                             fontWeight: FontWeight.bold,
@@ -483,7 +364,7 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
                             ],
                           )),
                       const Text(
-                        "RPM",
+                        "Estado del Sistema de Combustible",
                         style: TextStyle(
                           fontSize: 18,
                           color: Colors.black,
@@ -502,11 +383,11 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
     );
   }
 
-  Widget buildCargamotorGauge() {
+  Widget buildNivComGauge() {
     return ValueListenableBuilder<double>(
-      valueListenable: _cargaMotorNotifier,
-      builder: (context, carmotor, child) {
-        if (carmotor == -1) {
+      valueListenable: _nivComNotifier,
+      builder: (context, nivCom, child) {
+        if (nivCom == -1) {
           return Center(
             child: Text(
               "No soportado",
@@ -521,11 +402,11 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
         return SfRadialGauge(
           axes: <RadialAxis>[
             RadialAxis(
-              startAngle: 140, // Ángulo de inicio
-              endAngle: 40, // Ángulo de fin
-              minimum: 0, // Valor mínimo (0%)
-              maximum: 100, // Valor máximo (100%)
-              radiusFactor: 0.9, // Tamaño del medidor
+              startAngle: 140,
+              endAngle: 40,
+              minimum: 0,
+              maximum: 100,
+              radiusFactor: 0.9,
               majorTickStyle: const MajorTickStyle(
                 length: 12,
                 thickness: 2,
@@ -540,13 +421,8 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
               axisLineStyle: const AxisLineStyle(
                 thickness: 15,
                 gradient: SweepGradient(
-                  colors: [
-                    Colors.green,
-                    Colors.yellow,
-                    Colors.orange,
-                    Colors.red,
-                  ],
-                  stops: [0.25, 0.5, 0.75, 1],
+                  colors: [Colors.green, Colors.yellow, Colors.red],
+                  stops: [0.3, 0.7, 1],
                 ),
               ),
               axisLabelStyle: const GaugeTextStyle(
@@ -555,7 +431,7 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
               ),
               pointers: <GaugePointer>[
                 NeedlePointer(
-                  value: carmotor,
+                  value: nivCom,
                   enableAnimation: true,
                   animationType: AnimationType.easeOutBack,
                   needleColor: Colors.red,
@@ -576,43 +452,13 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
                   ),
                 ),
               ],
-              ranges: [
-                GaugeRange(
-                  startValue: 0,
-                  endValue: 25,
-                  color: Colors.green,
-                  startWidth: 15,
-                  endWidth: 15,
-                ),
-                GaugeRange(
-                  startValue: 25,
-                  endValue: 50,
-                  color: Colors.yellow,
-                  startWidth: 15,
-                  endWidth: 15,
-                ),
-                GaugeRange(
-                  startValue: 50,
-                  endValue: 75,
-                  color: Colors.orange,
-                  startWidth: 15,
-                  endWidth: 15,
-                ),
-                GaugeRange(
-                  startValue: 75,
-                  endValue: 100,
-                  color: Colors.red,
-                  startWidth: 15,
-                  endWidth: 15,
-                ),
-              ],
               annotations: [
                 GaugeAnnotation(
                   widget: Column(
                     children: [
                       const SizedBox(height: 180),
                       Text(
-                        carmotor.toStringAsFixed(0),
+                        nivCom.toStringAsFixed(0),
                         style: const TextStyle(
                           fontSize: 50,
                           fontWeight: FontWeight.bold,
@@ -626,7 +472,7 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
                         ),
                       ),
                       const Text(
-                        "Carga del Motor",
+                        "Nivel de combustible",
                         style: TextStyle(
                           fontSize: 18,
                           color: Colors.black,
@@ -645,11 +491,11 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
     );
   }
 
-  Widget buildConsumoInsComGauge() {
+  Widget buildPorEtaComGauge() {
     return ValueListenableBuilder<double>(
-      valueListenable: _cargaInComNotifier,
-      builder: (context, conincom, child) {
-        if (conincom == -1) {
+      valueListenable: _porEtaComNotifier,
+      builder: (context, porEtaCom, child) {
+        if (porEtaCom == -1) {
           return Center(
             child: Text(
               "No soportado",
@@ -668,7 +514,7 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
               startAngle: 140,
               endAngle: 40,
               minimum: 0,
-              maximum: 30, // Ajustado a un rango más realista
+              maximum: 100,
               radiusFactor: 0.9,
               majorTickStyle: const MajorTickStyle(
                 length: 10,
@@ -684,13 +530,8 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
               axisLineStyle: const AxisLineStyle(
                 thickness: 12,
                 gradient: SweepGradient(
-                  colors: [
-                    Colors.green, // Bajo consumo
-                    Colors.yellow, // Moderado
-                    Colors.orange, // Alto consumo
-                    Colors.red, // Excesivo
-                  ],
-                  stops: [0.15, 0.35, 0.65, 1],
+                  colors: [Colors.green, Colors.yellow, Colors.red],
+                  stops: [0.3, 0.7, 1],
                 ),
               ),
               axisLabelStyle: const GaugeTextStyle(
@@ -700,7 +541,7 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
               pointers: <GaugePointer>[
                 NeedlePointer(
                   value:
-                      conincom.clamp(0, 30), // Limita valores fuera del rango
+                      porEtaCom.clamp(0, 30), // Limita valores fuera del rango
                   enableAnimation: true,
                   animationType: AnimationType.elasticOut,
                   needleColor: Colors.red,
@@ -718,43 +559,13 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
                   ),
                 ),
               ],
-              ranges: [
-                GaugeRange(
-                  startValue: 0,
-                  endValue: 5,
-                  color: Colors.green,
-                  startWidth: 12,
-                  endWidth: 12,
-                ),
-                GaugeRange(
-                  startValue: 5,
-                  endValue: 10,
-                  color: Colors.yellow,
-                  startWidth: 12,
-                  endWidth: 12,
-                ),
-                GaugeRange(
-                  startValue: 10,
-                  endValue: 20,
-                  color: Colors.orange,
-                  startWidth: 12,
-                  endWidth: 12,
-                ),
-                GaugeRange(
-                  startValue: 20,
-                  endValue: 30,
-                  color: Colors.red,
-                  startWidth: 12,
-                  endWidth: 12,
-                ),
-              ],
               annotations: [
                 GaugeAnnotation(
                   widget: Column(
                     children: [
                       const SizedBox(height: 180),
                       Text(
-                        "${conincom.toStringAsFixed(1)} L/100km",
+                        "${porEtaCom.toStringAsFixed(1)} %",
                         style: const TextStyle(
                           fontSize: 45,
                           fontWeight: FontWeight.bold,
@@ -768,7 +579,7 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
                         ),
                       ),
                       const Text(
-                        "Consumo Instantáneo",
+                        "Porcentaje etanol en combustible",
                         style: TextStyle(
                           fontSize: 18,
                           color: Colors.black,
@@ -787,11 +598,11 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
     );
   }
 
-  Widget buildPosiAceGauge() {
+  Widget buildPresRielDirGauge() {
     return ValueListenableBuilder<double>(
-      valueListenable: _posiAceNotifier,
-      builder: (context, posace, child) {
-        if (posace == -1) {
+      valueListenable: _presRielDirNotifier,
+      builder: (context, presRielDir, child) {
+        if (presRielDir == -1) {
           return Center(
             child: Text(
               "No soportado",
@@ -810,7 +621,7 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
               startAngle: 140,
               endAngle: 40,
               minimum: 0,
-              maximum: 100, // 🔹 Ajustado a % real
+              maximum: 100,
               radiusFactor: 0.9,
               axisLineStyle: const AxisLineStyle(
                 thickness: 12,
@@ -821,7 +632,7 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
               ),
               pointers: <GaugePointer>[
                 NeedlePointer(
-                  value: posace.clamp(0, 100),
+                  value: presRielDir.clamp(0, 100),
                   enableAnimation: true,
                   animationType: AnimationType.elasticOut,
                   needleColor: Colors.red,
@@ -843,7 +654,7 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
                     children: [
                       const SizedBox(height: 180),
                       Text(
-                        "${posace.toStringAsFixed(0)}%",
+                        "${presRielDir.toStringAsFixed(0)}",
                         style: const TextStyle(
                           fontSize: 45,
                           fontWeight: FontWeight.bold,
@@ -854,7 +665,7 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
                         ),
                       ),
                       const Text(
-                        "Posición del Acelerador",
+                        "Presion Riel combustible directa",
                         style: TextStyle(fontSize: 18, color: Colors.black),
                       ),
                     ],
@@ -870,11 +681,11 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
     );
   }
 
-  Widget buildPresColAdmGauge() {
+  Widget buildPresRielRelGauge() {
     return ValueListenableBuilder<double>(
-      valueListenable: _presColAdmiNotifier,
-      builder: (context, prescoladm, child) {
-        if (prescoladm == -1) {
+      valueListenable: _presRielRelNotifier,
+      builder: (context, presRielRel, child) {
+        if (presRielRel == -1) {
           return Center(
             child: Text(
               "No soportado",
@@ -904,7 +715,7 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
               ),
               pointers: <GaugePointer>[
                 NeedlePointer(
-                  value: prescoladm.clamp(20, 250),
+                  value: presRielRel.clamp(20, 250),
                   enableAnimation: true,
                   animationType: AnimationType.elasticOut,
                   needleColor: Colors.red,
@@ -926,7 +737,7 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
                     children: [
                       const SizedBox(height: 180),
                       Text(
-                        "${prescoladm.toStringAsFixed(0)} kPa",
+                        "${presRielRel.toStringAsFixed(0)}",
                         style: const TextStyle(
                           fontSize: 45,
                           fontWeight: FontWeight.bold,
@@ -937,7 +748,7 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
                         ),
                       ),
                       const Text(
-                        "Presión Colector Admisión",
+                        "Presion Riel combustible relativa",
                         style: TextStyle(fontSize: 18, color: Colors.black),
                       ),
                     ],
@@ -953,11 +764,11 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
     );
   }
 
-  Widget buildPresComGauge() {
+  Widget buildPresBomComGauge() {
     return ValueListenableBuilder<double>(
-      valueListenable: _presComNotifier,
-      builder: (context, prescom, child) {
-        if (prescom == -1) {
+      valueListenable: _presBomComNotifier,
+      builder: (context, presBomCom, child) {
+        if (presBomCom == -1) {
           return Center(
             child: Text(
               "No soportado",
@@ -987,7 +798,7 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
               ),
               pointers: <GaugePointer>[
                 NeedlePointer(
-                  value: prescom.clamp(0, 500),
+                  value: presBomCom.clamp(0, 500),
                   enableAnimation: true,
                   animationType: AnimationType.elasticOut,
                   needleColor: Colors.red,
@@ -1009,7 +820,7 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
                     children: [
                       const SizedBox(height: 180),
                       Text(
-                        "${prescom.toStringAsFixed(0)} kPa",
+                        "${presBomCom.toStringAsFixed(0)} kPa",
                         style: const TextStyle(
                           fontSize: 45,
                           fontWeight: FontWeight.bold,
@@ -1020,7 +831,7 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
                         ),
                       ),
                       const Text(
-                        "Presión de Combustible",
+                        "Presión de la bomba de combustible",
                         style: TextStyle(fontSize: 18, color: Colors.black),
                       ),
                     ],
@@ -1036,11 +847,11 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
     );
   }
 
-  Widget buildSensMapGauge() {
+  Widget buildTipoComGauge() {
     return ValueListenableBuilder<double>(
-      valueListenable: _sensorMapNotifier,
-      builder: (context, sensmap, child) {
-        if (sensmap == -1) {
+      valueListenable: _tipoComNotifier,
+      builder: (context, tipoCom, child) {
+        if (tipoCom == -1) {
           return Center(
             child: Text(
               "No soportado",
@@ -1058,7 +869,7 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
             RadialAxis(
               startAngle: 140,
               endAngle: 40,
-              minimum: 20, // 🔹 Rango realista para Sensor MAP
+              minimum: 20, 
               maximum: 250,
               radiusFactor: 0.9,
               axisLineStyle: const AxisLineStyle(
@@ -1070,7 +881,7 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
               ),
               pointers: <GaugePointer>[
                 NeedlePointer(
-                  value: sensmap.clamp(20, 250),
+                  value: tipoCom.clamp(20, 250),
                   enableAnimation: true,
                   animationType: AnimationType.elasticOut,
                   needleColor: Colors.red,
@@ -1092,7 +903,7 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
                     children: [
                       const SizedBox(height: 180),
                       Text(
-                        "${sensmap.toStringAsFixed(0)} kPa",
+                        "${tipoCom.toStringAsFixed(0)} kPa",
                         style: const TextStyle(
                           fontSize: 45,
                           fontWeight: FontWeight.bold,
@@ -1103,7 +914,7 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
                         ),
                       ),
                       const Text(
-                        "Sensor MAP",
+                        "Tipo de Combustible",
                         style: TextStyle(fontSize: 18, color: Colors.black),
                       ),
                     ],
@@ -1119,279 +930,7 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
     );
   }
 
-  Widget buildTempAceiteGauge() {
-    return ValueListenableBuilder<double>(
-      valueListenable: _tempAceNotifier,
-      builder: (context, tempace, child) {
-        if (tempace == -1) {
-          return Center(
-            child: Text(
-              "No soportado",
-              style: TextStyle(
-                fontSize: 40,
-                color: Colors.red,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          );
-        }
-        return SfRadialGauge(
-          axes: <RadialAxis>[
-            RadialAxis(
-              startAngle: 140,
-              endAngle: 40,
-              minimum: 0,
-              maximum: 150,
-              radiusFactor: 0.9,
-              axisLineStyle: const AxisLineStyle(
-                thickness: 12,
-                gradient: SweepGradient(
-                  colors: [Colors.green, Colors.yellow, Colors.red],
-                  stops: [0.3, 0.7, 1],
-                ),
-              ),
-              pointers: <GaugePointer>[
-                NeedlePointer(
-                  value: tempace.clamp(20, 250),
-                  enableAnimation: true,
-                  animationType: AnimationType.elasticOut,
-                  needleColor: Colors.red,
-                  needleLength: 0.75,
-                  animationDuration: 1500,
-                  gradient: const LinearGradient(
-                    colors: [Colors.white, Colors.red],
-                  ),
-                  knobStyle: KnobStyle(
-                    color: Colors.transparent,
-                    borderColor: Colors.blue.withAlpha(100),
-                    borderWidth: 1,
-                  ),
-                ),
-              ],
-              annotations: [
-                GaugeAnnotation(
-                  widget: Column(
-                    children: [
-                      const SizedBox(height: 180),
-                      Text(
-                        "${tempace.toStringAsFixed(0)} C°",
-                        style: const TextStyle(
-                          fontSize: 45,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.teal,
-                          shadows: [
-                            Shadow(color: Colors.white, blurRadius: 20)
-                          ],
-                        ),
-                      ),
-                      const Text(
-                        "Temperatura del aceite",
-                        style: TextStyle(fontSize: 18, color: Colors.black),
-                      ),
-                    ],
-                  ),
-                  angle: 90,
-                  positionFactor: 0.75,
-                ),
-              ],
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  Widget buildTempRefGauge() {
-    return ValueListenableBuilder<double>(
-      valueListenable: _tempRefNotifier,
-      builder: (context, tempref, child) {
-        if (tempref == -1) {
-          return Center(
-            child: Text(
-              "No soportado",
-              style: TextStyle(
-                fontSize: 40,
-                color: Colors.red,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          );
-        }
-        return SfRadialGauge(
-          axes: <RadialAxis>[
-            RadialAxis(
-              startAngle: 140,
-              endAngle: 40,
-              minimum: 40,
-              maximum: 150,
-              radiusFactor: 0.9,
-              axisLineStyle: const AxisLineStyle(
-                thickness: 12,
-                gradient: SweepGradient(
-                  colors: [Colors.green, Colors.yellow, Colors.red],
-                  stops: [0.3, 0.7, 1],
-                ),
-              ),
-              pointers: <GaugePointer>[
-                NeedlePointer(
-                  value: tempref.clamp(20, 250),
-                  enableAnimation: true,
-                  animationType: AnimationType.elasticOut,
-                  needleColor: Colors.red,
-                  needleLength: 0.75,
-                  animationDuration: 1500,
-                  gradient: const LinearGradient(
-                    colors: [Colors.white, Colors.red],
-                  ),
-                  knobStyle: KnobStyle(
-                    color: Colors.transparent,
-                    borderColor: Colors.blue.withAlpha(100),
-                    borderWidth: 1,
-                  ),
-                ),
-              ],
-              annotations: [
-                GaugeAnnotation(
-                  widget: Column(
-                    children: [
-                      const SizedBox(height: 180),
-                      Text(
-                        "${tempref.toStringAsFixed(0)} C°",
-                        style: const TextStyle(
-                          fontSize: 45,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.teal,
-                          shadows: [
-                            Shadow(color: Colors.white, blurRadius: 20)
-                          ],
-                        ),
-                      ),
-                      const Text(
-                        "Temperatura refrigerante",
-                        style: TextStyle(fontSize: 18, color: Colors.black),
-                      ),
-                    ],
-                  ),
-                  angle: 90,
-                  positionFactor: 0.75,
-                ),
-              ],
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  Widget buildTieEncGauge() {
-    return ValueListenableBuilder<double>(
-      valueListenable: _tiemEncNotifier,
-      builder: (context, tiempen, child) {
-        if (tiempen == -11) {
-          return Center(
-            child: Text(
-              "No soportado",
-              style: TextStyle(
-                fontSize: 40,
-                color: Colors.red,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          );
-        }
-        return SfRadialGauge(
-          axes: <RadialAxis>[
-            RadialAxis(
-              startAngle: 140,
-              endAngle: 40,
-              minimum: -10,
-              maximum: 50,
-              radiusFactor: 0.9,
-              majorTickStyle: const MajorTickStyle(
-                length: 12,
-                thickness: 2,
-                color: Colors.black,
-              ),
-              minorTicksPerInterval: 4,
-              minorTickStyle: const MinorTickStyle(
-                length: 6,
-                thickness: 1,
-                color: Colors.grey,
-              ),
-              axisLineStyle: const AxisLineStyle(
-                thickness: 12,
-                gradient: SweepGradient(
-                  colors: [Colors.green, Colors.yellow, Colors.red],
-                  stops: [0.3, 0.7, 1],
-                ),
-              ),
-              axisLabelStyle: const GaugeTextStyle(
-                fontSize: 14,
-                color: Colors.black,
-              ),
-              pointers: <GaugePointer>[
-                NeedlePointer(
-                  value: tiempen.clamp(0, 50),
-                  enableAnimation: true,
-                  animationType: AnimationType.easeOutBack,
-                  needleColor: Colors.red,
-                  needleStartWidth: 1,
-                  needleEndWidth: 5,
-                  needleLength: 0.75,
-                  animationDuration: 2000,
-                  gradient: const LinearGradient(
-                    colors: [
-                      Colors.white,
-                      Colors.red,
-                    ],
-                  ),
-                  knobStyle: KnobStyle(
-                    color: Colors.transparent,
-                    borderColor: Colors.blue.withAlpha(100),
-                    borderWidth: 1,
-                  ),
-                ),
-              ],
-              annotations: [
-                GaugeAnnotation(
-                  widget: Column(
-                    children: [
-                      const SizedBox(height: 180),
-                      Text(
-                        "${tiempen.toStringAsFixed(0)} °",
-                        style: TextStyle(
-                          fontSize: 50,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.teal,
-                          shadows: [
-                            Shadow(
-                              color: Colors.white,
-                              blurRadius: 20,
-                            ),
-                          ],
-                        ),
-                      ),
-                      const Text(
-                        "Tiempo de Encendido",
-                        style: TextStyle(
-                          fontSize: 18,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ],
-                  ),
-                  angle: 90,
-                  positionFactor: 0.75,
-                )
-              ],
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  Widget buildVoltajeGauge() {
+ Widget buildVoltajeGauge() {
     return ValueListenableBuilder<double>(
       valueListenable: _voltajeNotifier,
       builder: (context, voltaje, child) {
@@ -1569,17 +1108,14 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
                 child: DropdownButton<String>(
                   value: selectedMetric,
                   items: <String>[
-                    'Velocidad',
-                    'RPM',
-                    'Carga del motor',
-                    'Consumo instantáneo combustible',
-                    'Posición acelerador',
-                    'Presión colector admisión',
-                    'Presión combustible',
-                    'Sensor MAP',
-                    'Temperatura aceite',
-                    'Temperatura refrigerante',
-                    'Tiempo de encendido',
+                    'Consumo instantáneo de combustible',
+                    'Estado del sistema de combustible',
+                    'Nivel de combustible',
+                    'Porcentaje etanol en combustible',
+                    'Presion Riel combustible directa',
+                    'Presion Riel combustible relativa',
+                    'Presión de la bomba de combustible',
+                    'Tipo combustible',
                     'Voltaje',
                   ]
                       .map((String value) => DropdownMenuItem<String>(
