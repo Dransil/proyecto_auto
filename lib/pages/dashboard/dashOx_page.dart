@@ -267,7 +267,7 @@ class _DashboardOxPageState extends State<DashboardOxPage> {
               startAngle: 140,
               endAngle: 40,
               minimum: 0,
-              maximum: 20,
+              maximum: 1,
               radiusFactor: 0.9,
               majorTickStyle: const MajorTickStyle(
                 length: 12,
@@ -375,7 +375,7 @@ class _DashboardOxPageState extends State<DashboardOxPage> {
               startAngle: 140,
               endAngle: 40,
               minimum: 0,
-              maximum: 20,
+              maximum: 1,
               radiusFactor: 0.9,
               majorTickStyle: const MajorTickStyle(
                 length: 12,
@@ -481,7 +481,7 @@ class _DashboardOxPageState extends State<DashboardOxPage> {
               startAngle: 140,
               endAngle: 40,
               minimum: 0,
-              maximum: 20,
+              maximum: 1,
               radiusFactor: 0.9,
               majorTickStyle: const MajorTickStyle(
                 length: 12,
@@ -590,7 +590,7 @@ class _DashboardOxPageState extends State<DashboardOxPage> {
               startAngle: 140,
               endAngle: 40,
               minimum: 0,
-              maximum: 20,
+              maximum: 1,
               radiusFactor: 0.9,
               majorTickStyle: const MajorTickStyle(
                 length: 10,
@@ -616,7 +616,7 @@ class _DashboardOxPageState extends State<DashboardOxPage> {
               ),
               pointers: <GaugePointer>[
                 NeedlePointer(
-                  value: sOB1S4.clamp(0, 20),
+                  value: sOB1S4.clamp(0, 1),
                   enableAnimation: true,
                   animationType: AnimationType.elasticOut,
                   needleColor: Colors.red,
@@ -696,7 +696,7 @@ class _DashboardOxPageState extends State<DashboardOxPage> {
               startAngle: 140,
               endAngle: 40,
               minimum: 0,
-              maximum: 20,
+              maximum: 1,
               radiusFactor: 0.9,
               majorTickStyle: const MajorTickStyle(
                 length: 12,
@@ -718,7 +718,7 @@ class _DashboardOxPageState extends State<DashboardOxPage> {
               ),
               pointers: <GaugePointer>[
                 NeedlePointer(
-                  value: sOB2S1.clamp(0, 20),
+                  value: sOB2S1.clamp(0, 1),
                   enableAnimation: true,
                   animationType: AnimationType.elasticOut,
                   needleColor: Colors.red,
@@ -790,7 +790,7 @@ class _DashboardOxPageState extends State<DashboardOxPage> {
               startAngle: 140,
               endAngle: 40,
               minimum: 0,
-              maximum: 20,
+              maximum: 1,
               radiusFactor: 0.9,
               majorTickStyle: const MajorTickStyle(
                 length: 12,
@@ -812,7 +812,7 @@ class _DashboardOxPageState extends State<DashboardOxPage> {
               ),
               pointers: <GaugePointer>[
                 NeedlePointer(
-                  value: sOB2S2.clamp(0, 20),
+                  value: sOB2S2.clamp(0, 1),
                   enableAnimation: true,
                   animationType: AnimationType.elasticOut,
                   needleColor: Colors.red,
@@ -884,7 +884,7 @@ class _DashboardOxPageState extends State<DashboardOxPage> {
               startAngle: 140,
               endAngle: 40,
               minimum: 0,
-              maximum: 20,
+              maximum: 1,
               radiusFactor: 0.9,
               majorTickStyle: const MajorTickStyle(
                 length: 12,
@@ -906,7 +906,7 @@ class _DashboardOxPageState extends State<DashboardOxPage> {
               ),
               pointers: <GaugePointer>[
                 NeedlePointer(
-                  value: sOB2S3.clamp(0, 20),
+                  value: sOB2S3.clamp(0, 1),
                   enableAnimation: true,
                   animationType: AnimationType.elasticOut,
                   needleColor: Colors.red,
@@ -978,7 +978,7 @@ class _DashboardOxPageState extends State<DashboardOxPage> {
               startAngle: 140,
               endAngle: 40,
               minimum: 0,
-              maximum: 20,
+              maximum: 1,
               radiusFactor: 0.9,
               majorTickStyle: const MajorTickStyle(
                 length: 12,
@@ -1000,7 +1000,7 @@ class _DashboardOxPageState extends State<DashboardOxPage> {
               ),
               pointers: <GaugePointer>[
                 NeedlePointer(
-                  value: sOB2S4.clamp(0, 20),
+                  value: sOB2S4.clamp(0, 1),
                   enableAnimation: true,
                   animationType: AnimationType.elasticOut,
                   needleColor: Colors.red,
@@ -1072,7 +1072,7 @@ class _DashboardOxPageState extends State<DashboardOxPage> {
               startAngle: 140,
               endAngle: 40,
               minimum: 0,
-              maximum: 20,
+              maximum: 1200,
               radiusFactor: 0.9,
               majorTickStyle: const MajorTickStyle(
                 length: 12,
@@ -1094,7 +1094,7 @@ class _DashboardOxPageState extends State<DashboardOxPage> {
               ),
               pointers: <GaugePointer>[
                 NeedlePointer(
-                  value: tempCataB1S1.clamp(0, 20),
+                  value: tempCataB1S1.clamp(0, 1200),
                   enableAnimation: true,
                   animationType: AnimationType.elasticOut,
                   needleColor: Colors.red,
@@ -1166,7 +1166,7 @@ class _DashboardOxPageState extends State<DashboardOxPage> {
               startAngle: 140,
               endAngle: 40,
               minimum: 0,
-              maximum: 20,
+              maximum: 1200,
               radiusFactor: 0.9,
               majorTickStyle: const MajorTickStyle(
                 length: 12,
@@ -1188,7 +1188,7 @@ class _DashboardOxPageState extends State<DashboardOxPage> {
               ),
               pointers: <GaugePointer>[
                 NeedlePointer(
-                  value: tempCataB1S2.clamp(0, 20),
+                  value: tempCataB1S2.clamp(0, 1200),
                   enableAnimation: true,
                   animationType: AnimationType.elasticOut,
                   needleColor: Colors.red,
@@ -1260,7 +1260,7 @@ class _DashboardOxPageState extends State<DashboardOxPage> {
               startAngle: 140,
               endAngle: 40,
               minimum: 0,
-              maximum: 20,
+              maximum: 1200,
               radiusFactor: 0.9,
               majorTickStyle: const MajorTickStyle(
                 length: 12,
@@ -1282,7 +1282,7 @@ class _DashboardOxPageState extends State<DashboardOxPage> {
               ),
               pointers: <GaugePointer>[
                 NeedlePointer(
-                  value: tempCataB2S1.clamp(0, 20),
+                  value: tempCataB2S1.clamp(0, 1200),
                   enableAnimation: true,
                   animationType: AnimationType.elasticOut,
                   needleColor: Colors.red,
@@ -1354,7 +1354,7 @@ class _DashboardOxPageState extends State<DashboardOxPage> {
               startAngle: 140,
               endAngle: 40,
               minimum: 0,
-              maximum: 20,
+              maximum: 1200,
               radiusFactor: 0.9,
               majorTickStyle: const MajorTickStyle(
                 length: 12,
@@ -1376,7 +1376,7 @@ class _DashboardOxPageState extends State<DashboardOxPage> {
               ),
               pointers: <GaugePointer>[
                 NeedlePointer(
-                  value: tempCataB2S2.clamp(0, 20),
+                  value: tempCataB2S2.clamp(0, 1200),
                   enableAnimation: true,
                   animationType: AnimationType.elasticOut,
                   needleColor: Colors.red,

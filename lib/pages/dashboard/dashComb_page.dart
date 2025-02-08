@@ -136,10 +136,7 @@ class _DashboardCombPageState extends State<DashboardCombPage> {
         }
       }
     });
-    _databaseRef
-        .child('/SensoresCombustible/Tipo combustible')
-        .onValue
-        .listen((event) {
+    _databaseRef.child('/SensoresCombustible/Tipo combustible').onValue.listen((event) {
       final data = event.snapshot.value;
       if (data != null) {
         if (data == "No soportado") {
@@ -210,7 +207,7 @@ class _DashboardCombPageState extends State<DashboardCombPage> {
               startAngle: 140,
               endAngle: 40,
               minimum: 0,
-              maximum: 30,
+              maximum: 50,
               radiusFactor: 0.9,
               majorTickStyle: const MajorTickStyle(
                 length: 12,
@@ -263,7 +260,7 @@ class _DashboardCombPageState extends State<DashboardCombPage> {
                     children: [
                       const SizedBox(height: 180),
                       Text(
-                        conInsCom.toStringAsFixed(0),
+                        "${conInsCom.toStringAsFixed(1)} L/h",
                         style: const TextStyle(
                           fontSize: 50,
                           fontWeight: FontWeight.bold,
@@ -477,7 +474,7 @@ class _DashboardCombPageState extends State<DashboardCombPage> {
                     children: [
                       const SizedBox(height: 180),
                       Text(
-                        nivCom.toStringAsFixed(0),
+                        "${nivCom.toStringAsFixed(1)} %",
                         style: const TextStyle(
                           fontSize: 50,
                           fontWeight: FontWeight.bold,
@@ -560,7 +557,7 @@ class _DashboardCombPageState extends State<DashboardCombPage> {
               pointers: <GaugePointer>[
                 NeedlePointer(
                   value:
-                      porEtaCom.clamp(0, 30), // Limita valores fuera del rango
+                      porEtaCom.clamp(0, 100), // Limita valores fuera del rango
                   enableAnimation: true,
                   animationType: AnimationType.elasticOut,
                   needleColor: Colors.red,
@@ -640,7 +637,7 @@ class _DashboardCombPageState extends State<DashboardCombPage> {
               startAngle: 140,
               endAngle: 40,
               minimum: 0,
-              maximum: 100,
+              maximum: 300,
               radiusFactor: 0.9,
               axisLineStyle: const AxisLineStyle(
                 thickness: 12,
@@ -651,7 +648,7 @@ class _DashboardCombPageState extends State<DashboardCombPage> {
               ),
               pointers: <GaugePointer>[
                 NeedlePointer(
-                  value: presRielDir.clamp(0, 100),
+                  value: presRielDir.clamp(0, 300),
                   enableAnimation: true,
                   animationType: AnimationType.elasticOut,
                   needleColor: Colors.red,
@@ -673,7 +670,7 @@ class _DashboardCombPageState extends State<DashboardCombPage> {
                     children: [
                       const SizedBox(height: 180),
                       Text(
-                        "${presRielDir.toStringAsFixed(0)}",
+                        "${presRielDir.toStringAsFixed(0)} bar",
                         style: const TextStyle(
                           fontSize: 45,
                           fontWeight: FontWeight.bold,
@@ -722,8 +719,8 @@ class _DashboardCombPageState extends State<DashboardCombPage> {
             RadialAxis(
               startAngle: 140,
               endAngle: 40,
-              minimum: 20, // 🔹 Rango realista
-              maximum: 250, // 🔹 MAP puede llegar a 250 kPa en motores turbo
+              minimum: 0,
+              maximum: 10,
               radiusFactor: 0.9,
               axisLineStyle: const AxisLineStyle(
                 thickness: 12,
@@ -734,7 +731,7 @@ class _DashboardCombPageState extends State<DashboardCombPage> {
               ),
               pointers: <GaugePointer>[
                 NeedlePointer(
-                  value: presRielRel.clamp(20, 250),
+                  value: presRielRel.clamp(0, 10),
                   enableAnimation: true,
                   animationType: AnimationType.elasticOut,
                   needleColor: Colors.red,
@@ -756,7 +753,7 @@ class _DashboardCombPageState extends State<DashboardCombPage> {
                     children: [
                       const SizedBox(height: 180),
                       Text(
-                        "${presRielRel.toStringAsFixed(0)}",
+                        "${presRielRel.toStringAsFixed(0)} bar",
                         style: const TextStyle(
                           fontSize: 45,
                           fontWeight: FontWeight.bold,
@@ -806,7 +803,7 @@ class _DashboardCombPageState extends State<DashboardCombPage> {
               startAngle: 140,
               endAngle: 40,
               minimum: 0,
-              maximum: 500,
+              maximum: 10,
               radiusFactor: 0.9,
               axisLineStyle: const AxisLineStyle(
                 thickness: 12,
@@ -817,7 +814,7 @@ class _DashboardCombPageState extends State<DashboardCombPage> {
               ),
               pointers: <GaugePointer>[
                 NeedlePointer(
-                  value: presBomCom.clamp(0, 500),
+                  value: presBomCom.clamp(0, 10),
                   enableAnimation: true,
                   animationType: AnimationType.elasticOut,
                   needleColor: Colors.red,
@@ -839,7 +836,7 @@ class _DashboardCombPageState extends State<DashboardCombPage> {
                     children: [
                       const SizedBox(height: 180),
                       Text(
-                        "${presBomCom.toStringAsFixed(0)} kPa",
+                        "${presBomCom.toStringAsFixed(0)} bar",
                         style: const TextStyle(
                           fontSize: 45,
                           fontWeight: FontWeight.bold,
@@ -888,8 +885,8 @@ class _DashboardCombPageState extends State<DashboardCombPage> {
             RadialAxis(
               startAngle: 140,
               endAngle: 40,
-              minimum: 20,
-              maximum: 250,
+              minimum: 0,
+              maximum: 100,
               radiusFactor: 0.9,
               axisLineStyle: const AxisLineStyle(
                 thickness: 12,
@@ -900,7 +897,7 @@ class _DashboardCombPageState extends State<DashboardCombPage> {
               ),
               pointers: <GaugePointer>[
                 NeedlePointer(
-                  value: tipoCom.clamp(20, 250),
+                  value: tipoCom.clamp(0, 100),
                   enableAnimation: true,
                   animationType: AnimationType.elasticOut,
                   needleColor: Colors.red,
@@ -922,7 +919,7 @@ class _DashboardCombPageState extends State<DashboardCombPage> {
                     children: [
                       const SizedBox(height: 180),
                       Text(
-                        "${tipoCom.toStringAsFixed(0)} kPa",
+                        "${tipoCom.toStringAsFixed(0)}",
                         style: const TextStyle(
                           fontSize: 45,
                           fontWeight: FontWeight.bold,

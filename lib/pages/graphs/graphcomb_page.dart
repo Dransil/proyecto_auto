@@ -13,7 +13,7 @@ final Color colorPrimary = Color(0xFF007AFF); // Azul principal
 class _GraphcombPageState extends State<GraphcombPage> {
   List<ChartData> chartData = [];
   late DatabaseReference _databaseRef;
-  String selectedChart = '/Sensores/Voltaje'; // Opción inicial seleccionada
+  String selectedChart = '/SensoresCombustible/Consumo instantáneo de combustible'; // Opción inicial seleccionada
   StreamSubscription<DatabaseEvent>?
       _databaseSubscription; // Listener de Firebase
 
@@ -47,59 +47,50 @@ class _GraphcombPageState extends State<GraphcombPage> {
 
   // Método para obtener el rango máximo según la métrica seleccionada
   double _getYAxisMax() {
-    switch (selectedChart) {
-      case '/Sensores/Voltaje':
-        return 16; // Rango máximo para voltaje
-      case '/Sensores/RPM':
-        return 7000; // Rango máximo para RPM
-      case '/Sensores/Carga del motor':
-        return 100; // Rango máximo para carga del motor
-      case '/Sensores/Consumo instantáneo combustible':
-        return 50; // Rango máximo para consumo de combustible
-      case '/Sensores/Posición acelerador':
-        return 100; // Rango máximo para posición del acelerador
-      case '/Sensores/Presión colector admisión':
-        return 100; // Rango máximo para presión del colector de admisión
-      case '/Sensores/Presión combustible':
-        return 100; // Rango máximo para presión de combustible
-      case '/Sensores/Sensor MAP':
-        return 100; // Rango máximo para sensor MAP
-      case '/Sensores/Temperatura aceite':
-        return 120; // Rango máximo para temperatura del aceite
-      case '/Sensores/Temperatura refrigerante':
-        return 120; // Rango máximo para temperatura del refrigerante
-      case '/Sensores/Tiempo de encendido':
-        return 30; // Rango máximo para tiempo de encendido
-      default:
-        return 0.0;
-    }
+  switch (selectedChart) {
+    case '/SensoresCombustible/Consumo instantáneo de combustible':
+      return 50; // 50 L/h o 50 GPH
+    case '/SensoresCombustible/Estado del sistema de combustible':
+      return 100;
+    case '/SensoresCombustible/Nivel de combustible':
+      return 100; // 0% a 100%
+    case '/SensoresCombustible/Porcentaje etanol en combustible':
+      return 100; // 0% a 100%
+    case '/SensoresCombustible/Presion Riel combustible directa':
+      return 300; // 300 bar o 4350 PSI
+    case '/SensoresCombustible/Presion Riel combustible relativa':
+      return 10; // 10 bar o 145 PSI
+    case '/SensoresCombustible/Presión de la bomba de combustible':
+      return 10; // 10 bar o 145 PSI
+    case '/SensoresCombustible/Tipo combustible':
+      return 5; // Dependiendo de los tipos de combustible soportados
+    case '/SensoresCombustible/Voltaje':
+      return 14; // 14 V (sistema de 12 V)
+    default:
+      return 0.0;
   }
+}
 
   // Método para obtener el rango mínimo según la métrica seleccionada
   double _getYAxisMin() {
     switch (selectedChart) {
-      case '/Sensores/Voltaje':
+      case '/SensoresCombustible/Consumo instantáneo de combustible':
         return 0; // Rango mínimo para voltaje
-      case '/Sensores/RPM':
+      case '/SensoresCombustible/Estado del sistema de combustible':
         return 0; // Rango mínimo para RPM
-      case '/Sensores/Carga del motor':
+      case '/SensoresCombustible/Nivel de combustible':
         return 0; // Rango mínimo para carga del motor
-      case '/Sensores/Consumo instantáneo combustible':
+      case '/SensoresCombustible/Porcentaje etanol en combustible':
         return 0; // Rango mínimo para consumo de combustible
-      case '/Sensores/Posición acelerador':
+      case '/SensoresCombustible/Presion Riel combustible directa':
         return 0; // Rango mínimo para posición del acelerador
-      case '/Sensores/Presión colector admisión':
+      case '/SensoresCombustible/Presion Riel combustible relativa':
         return 0; // Rango mínimo para presión del colector de admisión
-      case '/Sensores/Presión combustible':
+      case '/SensoresCombustible/Presión de la bomba de combustible':
         return 0; // Rango mínimo para presión de combustible
-      case '/Sensores/Sensor MAP':
+      case '/SensoresCombustible/Tipo combustible':
         return 0; // Rango mínimo para sensor MAP
-      case '/Sensores/Temperatura aceite':
-        return 0; // Rango mínimo para temperatura del aceite
-      case '/Sensores/Temperatura refrigerante':
-        return 0; // Rango mínimo para temperatura del refrigerante
-      case '/Sensores/Tiempo de encendido':
-        return -10; // Rango mínimo para tiempo de encendido
+      case '/SensoresCombustible/Voltaje':
       default:
         return 0.0;
     }
@@ -149,33 +140,31 @@ class _GraphcombPageState extends State<GraphcombPage> {
               child: DropdownButton<String>(
                 value: selectedChart,
                 items: <String>[
-                  '/Sensores/Voltaje',
-                  '/Sensores/RPM',
-                  '/Sensores/Carga del motor',
-                  '/Sensores/Consumo instantáneo combustible',
-                  '/Sensores/Posición acelerador',
-                  '/Sensores/Presión colector admisión',
-                  '/Sensores/Presión combustible',
-                  '/Sensores/Sensor MAP',
-                  '/Sensores/Temperatura aceite',
-                  '/Sensores/Temperatura refrigerante',
-                  '/Sensores/Tiempo de encendido',
+                  '/SensoresCombustible/Consumo instantáneo de combustible',
+                  '/SensoresCombustible/Estado del sistema de combustible',
+                  '/SensoresCombustible/Nivel de combustible',
+                  '/SensoresCombustible/Porcentaje etanol en combustible',
+                  '/SensoresCombustible/Presion Riel combustible directa',
+                  '/SensoresCombustible/Presion Riel combustible relativa',
+                  '/SensoresCombustible/Presión de la bomba de combustible',
+                  '/SensoresCombustible/Tipo combustible',
+                  '/SensoresCombustible/Voltaje',
                 ]
                     .map((String value) => DropdownMenuItem<String>(
                           value: value,
-                          child: Text(value.replaceAll('/Sensores/',
-                              '')), // Mostrar nombre sin "/Sensores/"
+                          child: Text(value.replaceAll('/SensoresCombustible/',
+                              '')),
                         ))
                     .toList(),
                 onChanged: (String? newValue) {
                   setState(() {
                     selectedChart = newValue!;
-                    chartData.clear(); // Reiniciar datos al cambiar métrica
-                    _setupDatabaseListener(); // Configurar listener para la nueva métrica
+                    chartData.clear();
+                    _setupDatabaseListener();
                   });
                 },
                 isExpanded: true,
-                underline: Container(), // Quita la línea por defecto
+                underline: Container(),
                 icon: const Icon(
                   Icons.arrow_drop_down,
                   color: Colors.blueAccent,
@@ -196,7 +185,7 @@ class _GraphcombPageState extends State<GraphcombPage> {
                 ),
                 primaryYAxis: NumericAxis(
                   title: AxisTitle(
-                      text: selectedChart.replaceAll('/Sensores/', '')),
+                      text: selectedChart.replaceAll('/SensoresCombustible/', '')),
                   minimum: _getYAxisMin(),
                   maximum: _getYAxisMax(),
                 ),
@@ -224,23 +213,3 @@ class ChartData {
 
   ChartData(this.x, this.y);
 }
-// /Sensores/Vel vehículo -
-// /Sensores/RPM -
-// /Sensores/Carga del motor -
-// /Sensores/Consumo instantáneo combustible
-// /Sensores/Posición acelerador -
-// /Sensores/Presión colector admisión -
-// /Sensores/Presión combustible
-// /Sensores/Sensor MAP 
-// /Sensores/Temperatura aceite
-// /Sensores/Temperatura refrigerante -
-// /Sensores/Tiempo de encendido -
-
-// '/Sensores/Voltaje',
-// '/Sensores/RPM',
-// '/Sensores/Vel vehículo',
-// '/Sensores/Posición acelerador',
-// '/Sensores/Temperatura refrigerante',
-// '/Sensores/Presión colector admisión',
-// '/Sensores/Carga del motor',
-// '/Sensores/Tiempo de encendido',
