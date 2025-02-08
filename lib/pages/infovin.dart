@@ -112,15 +112,24 @@ class _InfoVinPageState extends State<InfoVinPage> {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment:
+            CrossAxisAlignment.start, // Alinea en la parte superior
         children: [
-          Text(
-            label,
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          Expanded(
+            flex: 3,
+            child: Text(
+              label,
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
           ),
-          Text(
-            value,
-            style: const TextStyle(fontSize: 16),
+          Expanded(
+            flex: 5, // Mayor espacio para el valor
+            child: Text(
+              value,
+              style: const TextStyle(fontSize: 16),
+              softWrap: true,
+              overflow: TextOverflow.visible, // Permite el ajuste automático
+            ),
           ),
         ],
       ),

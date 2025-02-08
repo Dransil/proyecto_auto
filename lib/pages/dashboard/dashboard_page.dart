@@ -4,24 +4,27 @@ import 'package:syncfusion_flutter_gauges/gauges.dart';
 
 final Color colorPrimary = Color(0xFF007AFF); // Azul principal
 
-class DashboardCombPage extends StatefulWidget {
-  const DashboardCombPage({super.key});
+class SpeedometerPage extends StatefulWidget {
+  const SpeedometerPage({super.key});
 
   @override
-  State<DashboardCombPage> createState() => _DashboardCombPageState();
+  State<SpeedometerPage> createState() => _SpeedometerPageState();
 }
 
-class _DashboardCombPageState extends State<DashboardCombPage> {
-  final ValueNotifier<double> _conInsComNotifier = ValueNotifier(0.0);
-  final ValueNotifier<double> _estSisComNotifier = ValueNotifier(0.0);
-  final ValueNotifier<double> _nivComNotifier = ValueNotifier(0.0);
-  final ValueNotifier<double> _porEtaComNotifier = ValueNotifier(0.0);
-  final ValueNotifier<double> _presRielDirNotifier = ValueNotifier(0.0);
-  final ValueNotifier<double> _presRielRelNotifier = ValueNotifier(0.0);
-  final ValueNotifier<double> _presBomComNotifier = ValueNotifier(0.0);
-  final ValueNotifier<double> _tipoComNotifier = ValueNotifier(0.0);
+class _SpeedometerPageState extends State<SpeedometerPage> {
+  final ValueNotifier<double> _velocidadNotifier = ValueNotifier(0.0);
+  final ValueNotifier<double> _rpmNotifier = ValueNotifier(0.0);
+  final ValueNotifier<double> _cargaMotorNotifier = ValueNotifier(0.0);
+  final ValueNotifier<double> _cargaInComNotifier = ValueNotifier(0.0);
+  final ValueNotifier<double> _posiAceNotifier = ValueNotifier(0.0);
+  final ValueNotifier<double> _presColAdmiNotifier = ValueNotifier(0.0);
+  final ValueNotifier<double> _presComNotifier = ValueNotifier(0.0);
+  final ValueNotifier<double> _sensorMapNotifier = ValueNotifier(0.0);
+  final ValueNotifier<double> _tempAceNotifier = ValueNotifier(0.0);
+  final ValueNotifier<double> _tempRefNotifier = ValueNotifier(0.0);
+  final ValueNotifier<double> _tiemEncNotifier = ValueNotifier(0.0);
   final ValueNotifier<double> _voltajeNotifier = ValueNotifier(0.0);
-  String selectedMetric = "Consumo instantáneo de combustible";
+  String selectedMetric = "Velocidad";
   final DatabaseReference _databaseRef = FirebaseDatabase.instance.ref();
 
   @override
@@ -31,108 +34,148 @@ class _DashboardCombPageState extends State<DashboardCombPage> {
   }
 
   void _setupDatabaseListeners() {
-    _databaseRef.child('/SensoresCombustible/Consumo instantáneo de combustible').onValue.listen((event) {
+    // Listener para la velocidad
+    _databaseRef.child('/Sensores/Vel vehículo').onValue.listen((event) {
       final data = event.snapshot.value;
       if (data != null) {
         if (data == "No soportado") {
-          _conInsComNotifier.value =
+          _velocidadNotifier.value =
               -1; // Valor especial para indicar "No soportado"
         } else {
-          final conInsCom = double.tryParse(data.toString()) ?? 0.0;
-          _conInsComNotifier.value = conInsCom;
+          final velocidad = double.tryParse(data.toString()) ?? 0.0;
+          _velocidadNotifier.value = velocidad;
         }
       }
     });
-    _databaseRef.child('/SensoresCombustible/Estado del sistema de combustible').onValue.listen((event) {
+    _databaseRef.child('/Sensores/RPM').onValue.listen((event) {
       final data = event.snapshot.value;
       if (data != null) {
         if (data == "No soportado") {
-          _estSisComNotifier.value = -1; // Valor especial para indicar "No soportado"
+          _rpmNotifier.value = -1; // Valor especial para indicar "No soportado"
         } else {
-          final estSisCom = double.tryParse(data.toString()) ?? 0.0;
-          _estSisComNotifier.value = estSisCom;
+          final rpm = double.tryParse(data.toString()) ?? 0.0;
+          _rpmNotifier.value = rpm;
         }
       }
     });
-    _databaseRef.child('/SensoresCombustible/Nivel de combustible').onValue.listen((event) {
+    _databaseRef.child('/Sensores/Carga del motor').onValue.listen((event) {
       final data = event.snapshot.value;
       if (data != null) {
         if (data == "No soportado") {
-          _nivComNotifier.value =
+          _cargaMotorNotifier.value =
               -1; // Valor especial para indicar "No soportado"
         } else {
-          final nivCom = double.tryParse(data.toString()) ?? 0.0;
-          _nivComNotifier.value = nivCom;
+          final carmotor = double.tryParse(data.toString()) ?? 0.0;
+          _cargaMotorNotifier.value = carmotor;
         }
       }
     });
     _databaseRef
-        .child('/SensoresCombustible/Porcentaje etanol en combustible')
+        .child('/Sensores/Consumo instantáneo combustible')
         .onValue
         .listen((event) {
       final data = event.snapshot.value;
       if (data != null) {
         if (data == "No soportado") {
-          _porEtaComNotifier.value =
+          _cargaInComNotifier.value =
               -1; // Valor especial para indicar "No soportado"
         } else {
-          final porEtaCom = double.tryParse(data.toString()) ?? 0.0;
-          _porEtaComNotifier.value = porEtaCom;
+          final conincom = double.tryParse(data.toString()) ?? 0.0;
+          _cargaInComNotifier.value = conincom;
         }
       }
     });
-    _databaseRef.child('/SensoresCombustible/Presion Riel combustible directa').onValue.listen((event) {
+    _databaseRef.child('/Sensores/Posición acelerador').onValue.listen((event) {
       final data = event.snapshot.value;
       if (data != null) {
         if (data == "No soportado") {
-          _presRielDirNotifier.value =
+          _posiAceNotifier.value =
               -1; // Valor especial para indicar "No soportado"
         } else {
-          final presRielDir = double.tryParse(data.toString()) ?? 0.0;
-          _presRielDirNotifier.value = presRielDir;
+          final posace = double.tryParse(data.toString()) ?? 0.0;
+          _posiAceNotifier.value = posace;
         }
       }
     });
     _databaseRef
-        .child('/SensoresCombustible/Presion Riel combustible relativa')
+        .child('/Sensores/Presión colector admisión')
         .onValue
         .listen((event) {
       final data = event.snapshot.value;
       if (data != null) {
         if (data == "No soportado") {
-          _presRielRelNotifier.value =
+          _presColAdmiNotifier.value =
               -1; // Valor especial para indicar "No soportado"
         } else {
-          final presRielRel = double.tryParse(data.toString()) ?? 0.0;
-          _presRielRelNotifier.value = presRielRel;
+          final prescoladm = double.tryParse(data.toString()) ?? 0.0;
+          _presColAdmiNotifier.value = prescoladm;
         }
       }
     });
-    _databaseRef.child('/SensoresCombustible/Presión de la bomba de combustible').onValue.listen((event) {
+    _databaseRef.child('/Sensores/Presión combustible').onValue.listen((event) {
       final data = event.snapshot.value;
       if (data != null) {
         if (data == "No soportado") {
-          _presBomComNotifier.value =
+          _presComNotifier.value =
               -1; // Valor especial para indicar "No soportado"
         } else {
-          final presBomCom = double.tryParse(data.toString()) ?? 0.0;
-          _presBomComNotifier.value = presBomCom;
+          final prescom = double.tryParse(data.toString()) ?? 0.0;
+          _presComNotifier.value = prescom;
         }
       }
     });
-    _databaseRef.child('/SensoresCombustible/Tipo combustible').onValue.listen((event) {
+    _databaseRef.child('/Sensores/Sensor MAP').onValue.listen((event) {
       final data = event.snapshot.value;
       if (data != null) {
         if (data == "No soportado") {
-          _tipoComNotifier.value =
+          _sensorMapNotifier.value =
               -1; // Valor especial para indicar "No soportado"
         } else {
-          final tipoCom = double.tryParse(data.toString()) ?? 0.0;
-          _tipoComNotifier.value = tipoCom;
+          final sensmap = double.tryParse(data.toString()) ?? 0.0;
+          _sensorMapNotifier.value = sensmap;
         }
       }
     });
-    _databaseRef.child('/SensoresCombustible/Voltaje').onValue.listen((event) {
+    _databaseRef.child('/Sensores/Temperatura aceite').onValue.listen((event) {
+      final data = event.snapshot.value;
+      if (data != null) {
+        if (data == "No soportado") {
+          _tempAceNotifier.value =
+              -1; // Valor especial para indicar "No soportado"
+        } else {
+          final tempace = double.tryParse(data.toString()) ?? 0.0;
+          _tempAceNotifier.value = tempace;
+        }
+      }
+    });
+    _databaseRef
+        .child('/Sensores/Temperatura refrigerante')
+        .onValue
+        .listen((event) {
+      final data = event.snapshot.value;
+      if (data != null) {
+        if (data == "No soportado") {
+          _tempRefNotifier.value =
+              -1; // Valor especial para indicar "No soportado"
+        } else {
+          final tempref = double.tryParse(data.toString()) ?? 0.0;
+          _tempRefNotifier.value = tempref;
+        }
+      }
+    });
+    _databaseRef.child('/Sensores/Tiempo de encendido').onValue.listen((event) {
+      final data = event.snapshot.value;
+      if (data != null) {
+        if (data == "No soportado") {
+          _tiemEncNotifier.value =
+              -1; // Valor especial para indicar "No soportado"
+        } else {
+          final tiempen = double.tryParse(data.toString()) ?? 0.0;
+          _tiemEncNotifier.value = tiempen;
+        }
+      }
+    });
+    _databaseRef.child('/Sensores/Voltaje').onValue.listen((event) {
       final data = event.snapshot.value;
       if (data != null) {
         if (data == "No soportado") {
@@ -148,32 +191,38 @@ class _DashboardCombPageState extends State<DashboardCombPage> {
 
   Widget buildGauge() {
     switch (selectedMetric) {
-      case 'Estado del sistema de combustible':
-        return buildEstSisComGauge();
-      case 'Nivel de combustible':
-        return buildNivComGauge();
-      case 'Porcentaje etanol en combustible':
-        return buildPorEtaComGauge();
-      case 'Presion Riel combustible directa':
-        return buildPresRielDirGauge();
-      case 'Presion Riel combustible relativa':
-        return buildPresRielRelGauge();
-      case 'Presión de la bomba de combustible':
-        return buildPresBomComGauge();
-      case 'Tipo combustible':
-        return buildTipoComGauge();
+      case 'RPM':
+        return buildRpmGauge();
+      case 'Carga del motor':
+        return buildCargamotorGauge();
+      case 'Consumo instantáneo combustible':
+        return buildConsumoInsComGauge();
+      case 'Posición acelerador':
+        return buildPosiAceGauge();
+      case 'Presión colector admisión':
+        return buildPresColAdmGauge();
+      case 'Presión combustible':
+        return buildPresComGauge();
+      case 'Sensor MAP':
+        return buildSensMapGauge();
+      case 'Temperatura aceite':
+        return buildTempAceiteGauge();
+      case 'Temperatura refrigerante':
+        return buildTempRefGauge();
+      case 'Tiempo de encendido':
+        return buildTieEncGauge();
       case 'Voltaje':
         return buildVoltajeGauge();
       default:
-        return buildConInsComGauge();
+        return buildSpeedGauge();
     }
   }
 
-  Widget buildConInsComGauge() {
+  Widget buildSpeedGauge() {
     return ValueListenableBuilder<double>(
-      valueListenable: _conInsComNotifier,
-      builder: (context, conInsCom, child) {
-        if (conInsCom == -1) {
+      valueListenable: _velocidadNotifier,
+      builder: (context, velocidad, child) {
+        if (velocidad == -1) {
           return Center(
             child: Text(
               "No soportado",
@@ -191,7 +240,7 @@ class _DashboardCombPageState extends State<DashboardCombPage> {
               startAngle: 140,
               endAngle: 40,
               minimum: 0,
-              maximum: 30,
+              maximum: 240,
               radiusFactor: 0.9,
               majorTickStyle: const MajorTickStyle(
                 length: 12,
@@ -207,8 +256,13 @@ class _DashboardCombPageState extends State<DashboardCombPage> {
               axisLineStyle: const AxisLineStyle(
                 thickness: 15,
                 gradient: SweepGradient(
-                  colors: [Colors.green, Colors.yellow, Colors.red],
-                  stops: [0.3, 0.7, 1],
+                  colors: [
+                    Colors.green,
+                    Colors.yellow,
+                    Colors.orange,
+                    Colors.red,
+                  ],
+                  stops: [0.25, 0.5, 0.75, 1],
                 ),
               ),
               axisLabelStyle: const GaugeTextStyle(
@@ -217,7 +271,7 @@ class _DashboardCombPageState extends State<DashboardCombPage> {
               ),
               pointers: <GaugePointer>[
                 NeedlePointer(
-                  value: conInsCom,
+                  value: velocidad,
                   enableAnimation: true,
                   animationType: AnimationType.easeOutBack,
                   needleColor: Colors.red,
@@ -238,13 +292,43 @@ class _DashboardCombPageState extends State<DashboardCombPage> {
                   ),
                 ),
               ],
+              ranges: [
+                GaugeRange(
+                  startValue: 0,
+                  endValue: 30,
+                  color: Colors.pink,
+                  startWidth: 15,
+                  endWidth: 15,
+                ),
+                GaugeRange(
+                  startValue: 30,
+                  endValue: 80,
+                  color: Colors.green,
+                  startWidth: 15,
+                  endWidth: 15,
+                ),
+                GaugeRange(
+                  startValue: 80,
+                  endValue: 160,
+                  color: Colors.amber,
+                  startWidth: 15,
+                  endWidth: 15,
+                ),
+                GaugeRange(
+                  startValue: 160,
+                  endValue: 240,
+                  color: Colors.red,
+                  startWidth: 15,
+                  endWidth: 15,
+                ),
+              ],
               annotations: [
                 GaugeAnnotation(
                   widget: Column(
                     children: [
                       const SizedBox(height: 180),
                       Text(
-                        conInsCom.toStringAsFixed(0),
+                        velocidad.toStringAsFixed(0),
                         style: const TextStyle(
                           fontSize: 50,
                           fontWeight: FontWeight.bold,
@@ -258,7 +342,7 @@ class _DashboardCombPageState extends State<DashboardCombPage> {
                         ),
                       ),
                       const Text(
-                        "Consumo Instantaneo de Combustible",
+                        "km/h",
                         style: TextStyle(
                           fontSize: 18,
                           color: Colors.black,
@@ -277,11 +361,11 @@ class _DashboardCombPageState extends State<DashboardCombPage> {
     );
   }
 
-  Widget buildEstSisComGauge() {
+  Widget buildRpmGauge() {
     return ValueListenableBuilder<double>(
-      valueListenable: _estSisComNotifier,
-      builder: (context, estSisCom, child) {
-        if (estSisCom == -1) {
+      valueListenable: _rpmNotifier,
+      builder: (context, rpm, child) {
+        if (rpm == -1) {
           return Center(
             child: Text(
               "No soportado",
@@ -299,7 +383,7 @@ class _DashboardCombPageState extends State<DashboardCombPage> {
               startAngle: 140,
               endAngle: 40,
               minimum: 0,
-              maximum: 100,
+              maximum: 8000,
               radiusFactor: 0.9,
               majorTickStyle: const MajorTickStyle(
                 length: 12,
@@ -315,8 +399,13 @@ class _DashboardCombPageState extends State<DashboardCombPage> {
               axisLineStyle: const AxisLineStyle(
                 thickness: 15,
                 gradient: SweepGradient(
-                  colors: [Colors.green, Colors.yellow, Colors.red],
-                  stops: [0.3, 0.7, 1],
+                  colors: [
+                    Colors.green,
+                    Colors.yellow,
+                    Colors.orange,
+                    Colors.red,
+                  ],
+                  stops: [0.25, 0.5, 0.75, 1],
                 ),
               ),
               axisLabelStyle: const GaugeTextStyle(
@@ -325,7 +414,7 @@ class _DashboardCombPageState extends State<DashboardCombPage> {
               ),
               pointers: <GaugePointer>[
                 NeedlePointer(
-                  value: estSisCom,
+                  value: rpm,
                   enableAnimation: true,
                   animationType: AnimationType.easeOutBack,
                   needleColor: Colors.red,
@@ -346,12 +435,42 @@ class _DashboardCombPageState extends State<DashboardCombPage> {
                   ),
                 ),
               ],
+              ranges: [
+                GaugeRange(
+                  startValue: 0,
+                  endValue: 2000,
+                  color: Colors.green,
+                  startWidth: 15,
+                  endWidth: 15,
+                ),
+                GaugeRange(
+                  startValue: 2000,
+                  endValue: 5000,
+                  color: Colors.yellow,
+                  startWidth: 15,
+                  endWidth: 15,
+                ),
+                GaugeRange(
+                  startValue: 5000,
+                  endValue: 7000,
+                  color: Colors.orange,
+                  startWidth: 15,
+                  endWidth: 15,
+                ),
+                GaugeRange(
+                  startValue: 7000,
+                  endValue: 8000,
+                  color: Colors.red,
+                  startWidth: 15,
+                  endWidth: 15,
+                ),
+              ],
               annotations: [
                 GaugeAnnotation(
                   widget: Column(
                     children: [
                       const SizedBox(height: 180),
-                      Text(estSisCom.toStringAsFixed(0),
+                      Text(rpm.toStringAsFixed(0),
                           style: TextStyle(
                             fontSize: 50,
                             fontWeight: FontWeight.bold,
@@ -364,7 +483,7 @@ class _DashboardCombPageState extends State<DashboardCombPage> {
                             ],
                           )),
                       const Text(
-                        "Estado del Sistema de Combustible",
+                        "RPM",
                         style: TextStyle(
                           fontSize: 18,
                           color: Colors.black,
@@ -383,11 +502,11 @@ class _DashboardCombPageState extends State<DashboardCombPage> {
     );
   }
 
-  Widget buildNivComGauge() {
+  Widget buildCargamotorGauge() {
     return ValueListenableBuilder<double>(
-      valueListenable: _nivComNotifier,
-      builder: (context, nivCom, child) {
-        if (nivCom == -1) {
+      valueListenable: _cargaMotorNotifier,
+      builder: (context, carmotor, child) {
+        if (carmotor == -1) {
           return Center(
             child: Text(
               "No soportado",
@@ -402,11 +521,11 @@ class _DashboardCombPageState extends State<DashboardCombPage> {
         return SfRadialGauge(
           axes: <RadialAxis>[
             RadialAxis(
-              startAngle: 140,
-              endAngle: 40,
-              minimum: 0,
-              maximum: 100,
-              radiusFactor: 0.9,
+              startAngle: 140, // Ángulo de inicio
+              endAngle: 40, // Ángulo de fin
+              minimum: 0, // Valor mínimo (0%)
+              maximum: 100, // Valor máximo (100%)
+              radiusFactor: 0.9, // Tamaño del medidor
               majorTickStyle: const MajorTickStyle(
                 length: 12,
                 thickness: 2,
@@ -421,8 +540,13 @@ class _DashboardCombPageState extends State<DashboardCombPage> {
               axisLineStyle: const AxisLineStyle(
                 thickness: 15,
                 gradient: SweepGradient(
-                  colors: [Colors.green, Colors.yellow, Colors.red],
-                  stops: [0.3, 0.7, 1],
+                  colors: [
+                    Colors.green,
+                    Colors.yellow,
+                    Colors.orange,
+                    Colors.red,
+                  ],
+                  stops: [0.25, 0.5, 0.75, 1],
                 ),
               ),
               axisLabelStyle: const GaugeTextStyle(
@@ -431,7 +555,7 @@ class _DashboardCombPageState extends State<DashboardCombPage> {
               ),
               pointers: <GaugePointer>[
                 NeedlePointer(
-                  value: nivCom,
+                  value: carmotor,
                   enableAnimation: true,
                   animationType: AnimationType.easeOutBack,
                   needleColor: Colors.red,
@@ -452,13 +576,43 @@ class _DashboardCombPageState extends State<DashboardCombPage> {
                   ),
                 ),
               ],
+              ranges: [
+                GaugeRange(
+                  startValue: 0,
+                  endValue: 25,
+                  color: Colors.green,
+                  startWidth: 15,
+                  endWidth: 15,
+                ),
+                GaugeRange(
+                  startValue: 25,
+                  endValue: 50,
+                  color: Colors.yellow,
+                  startWidth: 15,
+                  endWidth: 15,
+                ),
+                GaugeRange(
+                  startValue: 50,
+                  endValue: 75,
+                  color: Colors.orange,
+                  startWidth: 15,
+                  endWidth: 15,
+                ),
+                GaugeRange(
+                  startValue: 75,
+                  endValue: 100,
+                  color: Colors.red,
+                  startWidth: 15,
+                  endWidth: 15,
+                ),
+              ],
               annotations: [
                 GaugeAnnotation(
                   widget: Column(
                     children: [
                       const SizedBox(height: 180),
                       Text(
-                        nivCom.toStringAsFixed(0),
+                        carmotor.toStringAsFixed(0),
                         style: const TextStyle(
                           fontSize: 50,
                           fontWeight: FontWeight.bold,
@@ -472,7 +626,7 @@ class _DashboardCombPageState extends State<DashboardCombPage> {
                         ),
                       ),
                       const Text(
-                        "Nivel de combustible",
+                        "Carga del Motor",
                         style: TextStyle(
                           fontSize: 18,
                           color: Colors.black,
@@ -491,11 +645,11 @@ class _DashboardCombPageState extends State<DashboardCombPage> {
     );
   }
 
-  Widget buildPorEtaComGauge() {
+  Widget buildConsumoInsComGauge() {
     return ValueListenableBuilder<double>(
-      valueListenable: _porEtaComNotifier,
-      builder: (context, porEtaCom, child) {
-        if (porEtaCom == -1) {
+      valueListenable: _cargaInComNotifier,
+      builder: (context, conincom, child) {
+        if (conincom == -1) {
           return Center(
             child: Text(
               "No soportado",
@@ -514,7 +668,7 @@ class _DashboardCombPageState extends State<DashboardCombPage> {
               startAngle: 140,
               endAngle: 40,
               minimum: 0,
-              maximum: 100,
+              maximum: 30, // Ajustado a un rango más realista
               radiusFactor: 0.9,
               majorTickStyle: const MajorTickStyle(
                 length: 10,
@@ -530,8 +684,13 @@ class _DashboardCombPageState extends State<DashboardCombPage> {
               axisLineStyle: const AxisLineStyle(
                 thickness: 12,
                 gradient: SweepGradient(
-                  colors: [Colors.green, Colors.yellow, Colors.red],
-                  stops: [0.3, 0.7, 1],
+                  colors: [
+                    Colors.green, // Bajo consumo
+                    Colors.yellow, // Moderado
+                    Colors.orange, // Alto consumo
+                    Colors.red, // Excesivo
+                  ],
+                  stops: [0.15, 0.35, 0.65, 1],
                 ),
               ),
               axisLabelStyle: const GaugeTextStyle(
@@ -541,7 +700,7 @@ class _DashboardCombPageState extends State<DashboardCombPage> {
               pointers: <GaugePointer>[
                 NeedlePointer(
                   value:
-                      porEtaCom.clamp(0, 30), // Limita valores fuera del rango
+                      conincom.clamp(0, 30), // Limita valores fuera del rango
                   enableAnimation: true,
                   animationType: AnimationType.elasticOut,
                   needleColor: Colors.red,
@@ -559,13 +718,43 @@ class _DashboardCombPageState extends State<DashboardCombPage> {
                   ),
                 ),
               ],
+              ranges: [
+                GaugeRange(
+                  startValue: 0,
+                  endValue: 5,
+                  color: Colors.green,
+                  startWidth: 12,
+                  endWidth: 12,
+                ),
+                GaugeRange(
+                  startValue: 5,
+                  endValue: 10,
+                  color: Colors.yellow,
+                  startWidth: 12,
+                  endWidth: 12,
+                ),
+                GaugeRange(
+                  startValue: 10,
+                  endValue: 20,
+                  color: Colors.orange,
+                  startWidth: 12,
+                  endWidth: 12,
+                ),
+                GaugeRange(
+                  startValue: 20,
+                  endValue: 30,
+                  color: Colors.red,
+                  startWidth: 12,
+                  endWidth: 12,
+                ),
+              ],
               annotations: [
                 GaugeAnnotation(
                   widget: Column(
                     children: [
                       const SizedBox(height: 180),
                       Text(
-                        "${porEtaCom.toStringAsFixed(1)} %",
+                        "${conincom.toStringAsFixed(1)} L/100km",
                         style: const TextStyle(
                           fontSize: 45,
                           fontWeight: FontWeight.bold,
@@ -579,7 +768,7 @@ class _DashboardCombPageState extends State<DashboardCombPage> {
                         ),
                       ),
                       const Text(
-                        "Porcentaje etanol en combustible",
+                        "Consumo Instantáneo",
                         style: TextStyle(
                           fontSize: 18,
                           color: Colors.black,
@@ -598,11 +787,11 @@ class _DashboardCombPageState extends State<DashboardCombPage> {
     );
   }
 
-  Widget buildPresRielDirGauge() {
+  Widget buildPosiAceGauge() {
     return ValueListenableBuilder<double>(
-      valueListenable: _presRielDirNotifier,
-      builder: (context, presRielDir, child) {
-        if (presRielDir == -1) {
+      valueListenable: _posiAceNotifier,
+      builder: (context, posace, child) {
+        if (posace == -1) {
           return Center(
             child: Text(
               "No soportado",
@@ -621,7 +810,7 @@ class _DashboardCombPageState extends State<DashboardCombPage> {
               startAngle: 140,
               endAngle: 40,
               minimum: 0,
-              maximum: 100,
+              maximum: 100, // 🔹 Ajustado a % real
               radiusFactor: 0.9,
               axisLineStyle: const AxisLineStyle(
                 thickness: 12,
@@ -632,7 +821,7 @@ class _DashboardCombPageState extends State<DashboardCombPage> {
               ),
               pointers: <GaugePointer>[
                 NeedlePointer(
-                  value: presRielDir.clamp(0, 100),
+                  value: posace.clamp(0, 100),
                   enableAnimation: true,
                   animationType: AnimationType.elasticOut,
                   needleColor: Colors.red,
@@ -654,7 +843,7 @@ class _DashboardCombPageState extends State<DashboardCombPage> {
                     children: [
                       const SizedBox(height: 180),
                       Text(
-                        "${presRielDir.toStringAsFixed(0)}",
+                        "${posace.toStringAsFixed(0)}%",
                         style: const TextStyle(
                           fontSize: 45,
                           fontWeight: FontWeight.bold,
@@ -665,7 +854,7 @@ class _DashboardCombPageState extends State<DashboardCombPage> {
                         ),
                       ),
                       const Text(
-                        "Presion Riel combustible directa",
+                        "Posición del Acelerador",
                         style: TextStyle(fontSize: 18, color: Colors.black),
                       ),
                     ],
@@ -681,11 +870,11 @@ class _DashboardCombPageState extends State<DashboardCombPage> {
     );
   }
 
-  Widget buildPresRielRelGauge() {
+  Widget buildPresColAdmGauge() {
     return ValueListenableBuilder<double>(
-      valueListenable: _presRielRelNotifier,
-      builder: (context, presRielRel, child) {
-        if (presRielRel == -1) {
+      valueListenable: _presColAdmiNotifier,
+      builder: (context, prescoladm, child) {
+        if (prescoladm == -1) {
           return Center(
             child: Text(
               "No soportado",
@@ -715,7 +904,7 @@ class _DashboardCombPageState extends State<DashboardCombPage> {
               ),
               pointers: <GaugePointer>[
                 NeedlePointer(
-                  value: presRielRel.clamp(20, 250),
+                  value: prescoladm.clamp(20, 250),
                   enableAnimation: true,
                   animationType: AnimationType.elasticOut,
                   needleColor: Colors.red,
@@ -737,7 +926,7 @@ class _DashboardCombPageState extends State<DashboardCombPage> {
                     children: [
                       const SizedBox(height: 180),
                       Text(
-                        "${presRielRel.toStringAsFixed(0)}",
+                        "${prescoladm.toStringAsFixed(0)} kPa",
                         style: const TextStyle(
                           fontSize: 45,
                           fontWeight: FontWeight.bold,
@@ -748,7 +937,7 @@ class _DashboardCombPageState extends State<DashboardCombPage> {
                         ),
                       ),
                       const Text(
-                        "Presion Riel combustible relativa",
+                        "Presión Colector Admisión",
                         style: TextStyle(fontSize: 18, color: Colors.black),
                       ),
                     ],
@@ -764,11 +953,11 @@ class _DashboardCombPageState extends State<DashboardCombPage> {
     );
   }
 
-  Widget buildPresBomComGauge() {
+  Widget buildPresComGauge() {
     return ValueListenableBuilder<double>(
-      valueListenable: _presBomComNotifier,
-      builder: (context, presBomCom, child) {
-        if (presBomCom == -1) {
+      valueListenable: _presComNotifier,
+      builder: (context, prescom, child) {
+        if (prescom == -1) {
           return Center(
             child: Text(
               "No soportado",
@@ -798,7 +987,7 @@ class _DashboardCombPageState extends State<DashboardCombPage> {
               ),
               pointers: <GaugePointer>[
                 NeedlePointer(
-                  value: presBomCom.clamp(0, 500),
+                  value: prescom.clamp(0, 500),
                   enableAnimation: true,
                   animationType: AnimationType.elasticOut,
                   needleColor: Colors.red,
@@ -820,7 +1009,7 @@ class _DashboardCombPageState extends State<DashboardCombPage> {
                     children: [
                       const SizedBox(height: 180),
                       Text(
-                        "${presBomCom.toStringAsFixed(0)} kPa",
+                        "${prescom.toStringAsFixed(0)} kPa",
                         style: const TextStyle(
                           fontSize: 45,
                           fontWeight: FontWeight.bold,
@@ -831,7 +1020,7 @@ class _DashboardCombPageState extends State<DashboardCombPage> {
                         ),
                       ),
                       const Text(
-                        "Presión de la bomba de combustible",
+                        "Presión de Combustible",
                         style: TextStyle(fontSize: 18, color: Colors.black),
                       ),
                     ],
@@ -847,11 +1036,11 @@ class _DashboardCombPageState extends State<DashboardCombPage> {
     );
   }
 
-  Widget buildTipoComGauge() {
+  Widget buildSensMapGauge() {
     return ValueListenableBuilder<double>(
-      valueListenable: _tipoComNotifier,
-      builder: (context, tipoCom, child) {
-        if (tipoCom == -1) {
+      valueListenable: _sensorMapNotifier,
+      builder: (context, sensmap, child) {
+        if (sensmap == -1) {
           return Center(
             child: Text(
               "No soportado",
@@ -869,7 +1058,7 @@ class _DashboardCombPageState extends State<DashboardCombPage> {
             RadialAxis(
               startAngle: 140,
               endAngle: 40,
-              minimum: 20, 
+              minimum: 20, // 🔹 Rango realista para Sensor MAP
               maximum: 250,
               radiusFactor: 0.9,
               axisLineStyle: const AxisLineStyle(
@@ -881,7 +1070,7 @@ class _DashboardCombPageState extends State<DashboardCombPage> {
               ),
               pointers: <GaugePointer>[
                 NeedlePointer(
-                  value: tipoCom.clamp(20, 250),
+                  value: sensmap.clamp(20, 250),
                   enableAnimation: true,
                   animationType: AnimationType.elasticOut,
                   needleColor: Colors.red,
@@ -903,7 +1092,7 @@ class _DashboardCombPageState extends State<DashboardCombPage> {
                     children: [
                       const SizedBox(height: 180),
                       Text(
-                        "${tipoCom.toStringAsFixed(0)} kPa",
+                        "${sensmap.toStringAsFixed(0)} kPa",
                         style: const TextStyle(
                           fontSize: 45,
                           fontWeight: FontWeight.bold,
@@ -914,7 +1103,7 @@ class _DashboardCombPageState extends State<DashboardCombPage> {
                         ),
                       ),
                       const Text(
-                        "Tipo de Combustible",
+                        "Sensor MAP",
                         style: TextStyle(fontSize: 18, color: Colors.black),
                       ),
                     ],
@@ -930,7 +1119,279 @@ class _DashboardCombPageState extends State<DashboardCombPage> {
     );
   }
 
- Widget buildVoltajeGauge() {
+  Widget buildTempAceiteGauge() {
+    return ValueListenableBuilder<double>(
+      valueListenable: _tempAceNotifier,
+      builder: (context, tempace, child) {
+        if (tempace == -1) {
+          return Center(
+            child: Text(
+              "No soportado",
+              style: TextStyle(
+                fontSize: 40,
+                color: Colors.red,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          );
+        }
+        return SfRadialGauge(
+          axes: <RadialAxis>[
+            RadialAxis(
+              startAngle: 140,
+              endAngle: 40,
+              minimum: 0,
+              maximum: 150,
+              radiusFactor: 0.9,
+              axisLineStyle: const AxisLineStyle(
+                thickness: 12,
+                gradient: SweepGradient(
+                  colors: [Colors.green, Colors.yellow, Colors.red],
+                  stops: [0.3, 0.7, 1],
+                ),
+              ),
+              pointers: <GaugePointer>[
+                NeedlePointer(
+                  value: tempace.clamp(20, 250),
+                  enableAnimation: true,
+                  animationType: AnimationType.elasticOut,
+                  needleColor: Colors.red,
+                  needleLength: 0.75,
+                  animationDuration: 1500,
+                  gradient: const LinearGradient(
+                    colors: [Colors.white, Colors.red],
+                  ),
+                  knobStyle: KnobStyle(
+                    color: Colors.transparent,
+                    borderColor: Colors.blue.withAlpha(100),
+                    borderWidth: 1,
+                  ),
+                ),
+              ],
+              annotations: [
+                GaugeAnnotation(
+                  widget: Column(
+                    children: [
+                      const SizedBox(height: 180),
+                      Text(
+                        "${tempace.toStringAsFixed(0)} C°",
+                        style: const TextStyle(
+                          fontSize: 45,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.teal,
+                          shadows: [
+                            Shadow(color: Colors.white, blurRadius: 20)
+                          ],
+                        ),
+                      ),
+                      const Text(
+                        "Temperatura del aceite",
+                        style: TextStyle(fontSize: 18, color: Colors.black),
+                      ),
+                    ],
+                  ),
+                  angle: 90,
+                  positionFactor: 0.75,
+                ),
+              ],
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget buildTempRefGauge() {
+    return ValueListenableBuilder<double>(
+      valueListenable: _tempRefNotifier,
+      builder: (context, tempref, child) {
+        if (tempref == -1) {
+          return Center(
+            child: Text(
+              "No soportado",
+              style: TextStyle(
+                fontSize: 40,
+                color: Colors.red,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          );
+        }
+        return SfRadialGauge(
+          axes: <RadialAxis>[
+            RadialAxis(
+              startAngle: 140,
+              endAngle: 40,
+              minimum: 40,
+              maximum: 150,
+              radiusFactor: 0.9,
+              axisLineStyle: const AxisLineStyle(
+                thickness: 12,
+                gradient: SweepGradient(
+                  colors: [Colors.green, Colors.yellow, Colors.red],
+                  stops: [0.3, 0.7, 1],
+                ),
+              ),
+              pointers: <GaugePointer>[
+                NeedlePointer(
+                  value: tempref.clamp(20, 250),
+                  enableAnimation: true,
+                  animationType: AnimationType.elasticOut,
+                  needleColor: Colors.red,
+                  needleLength: 0.75,
+                  animationDuration: 1500,
+                  gradient: const LinearGradient(
+                    colors: [Colors.white, Colors.red],
+                  ),
+                  knobStyle: KnobStyle(
+                    color: Colors.transparent,
+                    borderColor: Colors.blue.withAlpha(100),
+                    borderWidth: 1,
+                  ),
+                ),
+              ],
+              annotations: [
+                GaugeAnnotation(
+                  widget: Column(
+                    children: [
+                      const SizedBox(height: 180),
+                      Text(
+                        "${tempref.toStringAsFixed(0)} C°",
+                        style: const TextStyle(
+                          fontSize: 45,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.teal,
+                          shadows: [
+                            Shadow(color: Colors.white, blurRadius: 20)
+                          ],
+                        ),
+                      ),
+                      const Text(
+                        "Temperatura refrigerante",
+                        style: TextStyle(fontSize: 18, color: Colors.black),
+                      ),
+                    ],
+                  ),
+                  angle: 90,
+                  positionFactor: 0.75,
+                ),
+              ],
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget buildTieEncGauge() {
+    return ValueListenableBuilder<double>(
+      valueListenable: _tiemEncNotifier,
+      builder: (context, tiempen, child) {
+        if (tiempen == -11) {
+          return Center(
+            child: Text(
+              "No soportado",
+              style: TextStyle(
+                fontSize: 40,
+                color: Colors.red,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          );
+        }
+        return SfRadialGauge(
+          axes: <RadialAxis>[
+            RadialAxis(
+              startAngle: 140,
+              endAngle: 40,
+              minimum: -10,
+              maximum: 50,
+              radiusFactor: 0.9,
+              majorTickStyle: const MajorTickStyle(
+                length: 12,
+                thickness: 2,
+                color: Colors.black,
+              ),
+              minorTicksPerInterval: 4,
+              minorTickStyle: const MinorTickStyle(
+                length: 6,
+                thickness: 1,
+                color: Colors.grey,
+              ),
+              axisLineStyle: const AxisLineStyle(
+                thickness: 12,
+                gradient: SweepGradient(
+                  colors: [Colors.green, Colors.yellow, Colors.red],
+                  stops: [0.3, 0.7, 1],
+                ),
+              ),
+              axisLabelStyle: const GaugeTextStyle(
+                fontSize: 14,
+                color: Colors.black,
+              ),
+              pointers: <GaugePointer>[
+                NeedlePointer(
+                  value: tiempen.clamp(0, 50),
+                  enableAnimation: true,
+                  animationType: AnimationType.easeOutBack,
+                  needleColor: Colors.red,
+                  needleStartWidth: 1,
+                  needleEndWidth: 5,
+                  needleLength: 0.75,
+                  animationDuration: 2000,
+                  gradient: const LinearGradient(
+                    colors: [
+                      Colors.white,
+                      Colors.red,
+                    ],
+                  ),
+                  knobStyle: KnobStyle(
+                    color: Colors.transparent,
+                    borderColor: Colors.blue.withAlpha(100),
+                    borderWidth: 1,
+                  ),
+                ),
+              ],
+              annotations: [
+                GaugeAnnotation(
+                  widget: Column(
+                    children: [
+                      const SizedBox(height: 180),
+                      Text(
+                        "${tiempen.toStringAsFixed(0)} °",
+                        style: TextStyle(
+                          fontSize: 50,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.teal,
+                          shadows: [
+                            Shadow(
+                              color: Colors.white,
+                              blurRadius: 20,
+                            ),
+                          ],
+                        ),
+                      ),
+                      const Text(
+                        "Tiempo de Encendido",
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ],
+                  ),
+                  angle: 90,
+                  positionFactor: 0.75,
+                )
+              ],
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget buildVoltajeGauge() {
     return ValueListenableBuilder<double>(
       valueListenable: _voltajeNotifier,
       builder: (context, voltaje, child) {
@@ -973,7 +1434,7 @@ class _DashboardCombPageState extends State<DashboardCombPage> {
                     Colors.green,
                     Colors.red,
                   ],
-                  stops: [1 ,1, 1],
+                  stops: [1, 1, 1],
                 ),
               ),
               axisLabelStyle: const GaugeTextStyle(
@@ -1073,7 +1534,7 @@ class _DashboardCombPageState extends State<DashboardCombPage> {
           "Dashboard",
           style: TextStyle(
             fontSize: 24,
-            color: Colors.black,
+            color: Colors.white,
           ),
         ),
         actions: <Widget>[
@@ -1108,14 +1569,17 @@ class _DashboardCombPageState extends State<DashboardCombPage> {
                 child: DropdownButton<String>(
                   value: selectedMetric,
                   items: <String>[
-                    'Consumo instantáneo de combustible',
-                    'Estado del sistema de combustible',
-                    'Nivel de combustible',
-                    'Porcentaje etanol en combustible',
-                    'Presion Riel combustible directa',
-                    'Presion Riel combustible relativa',
-                    'Presión de la bomba de combustible',
-                    'Tipo combustible',
+                    'Velocidad',
+                    'RPM',
+                    'Carga del motor',
+                    'Consumo instantáneo combustible',
+                    'Posición acelerador',
+                    'Presión colector admisión',
+                    'Presión combustible',
+                    'Sensor MAP',
+                    'Temperatura aceite',
+                    'Temperatura refrigerante',
+                    'Tiempo de encendido',
                     'Voltaje',
                   ]
                       .map((String value) => DropdownMenuItem<String>(

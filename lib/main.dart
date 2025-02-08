@@ -1,13 +1,13 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:proyecto_auto/pages/dashboard_page.dart';
+import 'package:proyecto_auto/pages/dashboard/dashboard_page.dart';
 import 'package:proyecto_auto/pages/graphs_page.dart';
 import 'package:proyecto_auto/pages/home_page.dart';
 import 'package:proyecto_auto/pages/login_page.dart';
 import 'package:proyecto_auto/pages/nc.dart';
 import 'package:proyecto_auto/pages/register_page.dart';
-import 'package:proyecto_auto/pages/dashComb_page.dart';
-import 'package:proyecto_auto/pages/dashOx_page.dart';
+import 'package:proyecto_auto/pages/dashboard/dashComb_page.dart';
+import 'package:proyecto_auto/pages/dashboard/dashOx_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Login',
       theme: ThemeData(primarySwatch: Colors.blue),
-      home: DashboardCombPage(),
+      home: LoginPage(),
     );
   }
 }

@@ -272,7 +272,7 @@ class _DashboardOxPageState extends State<DashboardOxPage> {
               majorTickStyle: const MajorTickStyle(
                 length: 12,
                 thickness: 2,
-                color: Colors.black,
+                color: Colors.white,
               ),
               minorTicksPerInterval: 4,
               minorTickStyle: const MinorTickStyle(
@@ -790,7 +790,7 @@ class _DashboardOxPageState extends State<DashboardOxPage> {
               startAngle: 140,
               endAngle: 40,
               minimum: 0,
-              maximum: 20, 
+              maximum: 20,
               radiusFactor: 0.9,
               majorTickStyle: const MajorTickStyle(
                 length: 12,
