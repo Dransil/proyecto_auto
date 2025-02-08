@@ -24,6 +24,8 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
   final ValueNotifier<double> _tempRefNotifier = ValueNotifier(0.0);
   final ValueNotifier<double> _tiemEncNotifier = ValueNotifier(0.0);
   final ValueNotifier<double> _voltajeNotifier = ValueNotifier(0.0);
+  final ValueNotifier<double> _presBaromNotifier = ValueNotifier(0.0);
+  final ValueNotifier<double> _tiempFuncNotifier = ValueNotifier(0.0);
   String selectedMetric = "Velocidad";
   final DatabaseReference _databaseRef = FirebaseDatabase.instance.ref();
 
@@ -35,7 +37,7 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
 
   void _setupDatabaseListeners() {
     // Listener para la velocidad
-    _databaseRef.child('/Sensores/Vel vehículo').onValue.listen((event) {
+    _databaseRef.child('/SensoresMotor/Vel vehículo').onValue.listen((event) {
       final data = event.snapshot.value;
       if (data != null) {
         if (data == "No soportado") {
@@ -47,7 +49,7 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
         }
       }
     });
-    _databaseRef.child('/Sensores/RPM').onValue.listen((event) {
+    _databaseRef.child('/SensoresMotor/RPM').onValue.listen((event) {
       final data = event.snapshot.value;
       if (data != null) {
         if (data == "No soportado") {
@@ -58,7 +60,10 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
         }
       }
     });
-    _databaseRef.child('/Sensores/Carga del motor').onValue.listen((event) {
+    _databaseRef
+        .child('/SensoresMotor/Carga del motor')
+        .onValue
+        .listen((event) {
       final data = event.snapshot.value;
       if (data != null) {
         if (data == "No soportado") {
@@ -71,7 +76,7 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
       }
     });
     _databaseRef
-        .child('/Sensores/Consumo instantáneo combustible')
+        .child('/SensoresMotor/Consumo instantáneo combustible')
         .onValue
         .listen((event) {
       final data = event.snapshot.value;
@@ -85,7 +90,10 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
         }
       }
     });
-    _databaseRef.child('/Sensores/Posición acelerador').onValue.listen((event) {
+    _databaseRef
+        .child('/SensoresMotor/Posición acelerador')
+        .onValue
+        .listen((event) {
       final data = event.snapshot.value;
       if (data != null) {
         if (data == "No soportado") {
@@ -98,7 +106,7 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
       }
     });
     _databaseRef
-        .child('/Sensores/Presión colector admisión')
+        .child('/SensoresMotor/Presión colector admisión')
         .onValue
         .listen((event) {
       final data = event.snapshot.value;
@@ -112,7 +120,10 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
         }
       }
     });
-    _databaseRef.child('/Sensores/Presión combustible').onValue.listen((event) {
+    _databaseRef
+        .child('/SensoresMotor/Presión combustible')
+        .onValue
+        .listen((event) {
       final data = event.snapshot.value;
       if (data != null) {
         if (data == "No soportado") {
@@ -124,7 +135,7 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
         }
       }
     });
-    _databaseRef.child('/Sensores/Sensor MAP').onValue.listen((event) {
+    _databaseRef.child('/SensoresMotor/Sensor MAP').onValue.listen((event) {
       final data = event.snapshot.value;
       if (data != null) {
         if (data == "No soportado") {
@@ -136,7 +147,10 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
         }
       }
     });
-    _databaseRef.child('/Sensores/Temperatura aceite').onValue.listen((event) {
+    _databaseRef
+        .child('/SensoresMotor/Temperatura aceite')
+        .onValue
+        .listen((event) {
       final data = event.snapshot.value;
       if (data != null) {
         if (data == "No soportado") {
@@ -149,7 +163,7 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
       }
     });
     _databaseRef
-        .child('/Sensores/Temperatura refrigerante')
+        .child('/SensoresMotor/Temperatura refrigerante')
         .onValue
         .listen((event) {
       final data = event.snapshot.value;
@@ -163,7 +177,10 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
         }
       }
     });
-    _databaseRef.child('/Sensores/Tiempo de encendido').onValue.listen((event) {
+    _databaseRef
+        .child('/SensoresMotor/Tiempo de encendido')
+        .onValue
+        .listen((event) {
       final data = event.snapshot.value;
       if (data != null) {
         if (data == "No soportado") {
@@ -175,7 +192,7 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
         }
       }
     });
-    _databaseRef.child('/Sensores/Voltaje').onValue.listen((event) {
+    _databaseRef.child('/SensoresMotor/Voltaje').onValue.listen((event) {
       final data = event.snapshot.value;
       if (data != null) {
         if (data == "No soportado") {
@@ -184,6 +201,36 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
         } else {
           final voltaje = double.tryParse(data.toString()) ?? 0.0;
           _voltajeNotifier.value = voltaje;
+        }
+      }
+    });
+    _databaseRef
+        .child('/SensoresMotor/Presion Barometrica')
+        .onValue
+        .listen((event) {
+      final data = event.snapshot.value;
+      if (data != null) {
+        if (data == "No soportado") {
+          _presBaromNotifier.value =
+              -1; // Valor especial para indicar "No soportado"
+        } else {
+          final presbarom = double.tryParse(data.toString()) ?? 0.0;
+          _presBaromNotifier.value = presbarom;
+        }
+      }
+    });
+    _databaseRef
+        .child('/SensoresMotor/Tmp Funcionamiento')
+        .onValue
+        .listen((event) {
+      final data = event.snapshot.value;
+      if (data != null) {
+        if (data == "No soportado") {
+          _tiempFuncNotifier.value =
+              -1; // Valor especial para indicar "No soportado"
+        } else {
+          final tmpfun = double.tryParse(data.toString()) ?? 0.0;
+          _tiempFuncNotifier.value = tmpfun;
         }
       }
     });
@@ -213,6 +260,10 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
         return buildTieEncGauge();
       case 'Voltaje':
         return buildVoltajeGauge();
+      case 'Tiempo de funcionamiento':
+        return buildTiemFuncGauge();
+      case 'Presion Barometrica':
+        return buildPresionBarometricaGauge();
       default:
         return buildSpeedGauge();
     }
@@ -1391,6 +1442,222 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
     );
   }
 
+  Widget buildTiemFuncGauge() {
+    return ValueListenableBuilder<double>(
+      valueListenable: _tiempFuncNotifier,
+      builder: (context, tiempen, child) {
+        if (tiempen == -1) {
+          return Center(
+            child: Text(
+              "No soportado",
+              style: TextStyle(
+                fontSize: 40,
+                color: Colors.red,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          );
+        }
+        return SfRadialGauge(
+          axes: <RadialAxis>[
+            RadialAxis(
+              startAngle: 140,
+              endAngle: 40,
+              minimum: -10,
+              maximum: 50,
+              radiusFactor: 0.9,
+              majorTickStyle: const MajorTickStyle(
+                length: 12,
+                thickness: 2,
+                color: Colors.black,
+              ),
+              minorTicksPerInterval: 4,
+              minorTickStyle: const MinorTickStyle(
+                length: 6,
+                thickness: 1,
+                color: Colors.grey,
+              ),
+              axisLineStyle: const AxisLineStyle(
+                thickness: 12,
+                gradient: SweepGradient(
+                  colors: [Colors.green, Colors.yellow, Colors.red],
+                  stops: [0.3, 0.7, 1],
+                ),
+              ),
+              axisLabelStyle: const GaugeTextStyle(
+                fontSize: 14,
+                color: Colors.black,
+              ),
+              pointers: <GaugePointer>[
+                NeedlePointer(
+                  value: tiempen.clamp(0, 50),
+                  enableAnimation: true,
+                  animationType: AnimationType.easeOutBack,
+                  needleColor: Colors.red,
+                  needleStartWidth: 1,
+                  needleEndWidth: 5,
+                  needleLength: 0.75,
+                  animationDuration: 2000,
+                  gradient: const LinearGradient(
+                    colors: [
+                      Colors.white,
+                      Colors.red,
+                    ],
+                  ),
+                  knobStyle: KnobStyle(
+                    color: Colors.transparent,
+                    borderColor: Colors.blue.withAlpha(100),
+                    borderWidth: 1,
+                  ),
+                ),
+              ],
+              annotations: [
+                GaugeAnnotation(
+                  widget: Column(
+                    children: [
+                      const SizedBox(height: 180),
+                      Text(
+                        "${tiempen.toStringAsFixed(0)} °",
+                        style: TextStyle(
+                          fontSize: 50,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.teal,
+                          shadows: [
+                            Shadow(
+                              color: Colors.white,
+                              blurRadius: 20,
+                            ),
+                          ],
+                        ),
+                      ),
+                      const Text(
+                        "Tiempo de Funcionamiento",
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ],
+                  ),
+                  angle: 90,
+                  positionFactor: 0.75,
+                )
+              ],
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget buildPresionBarometricaGauge() {
+    return ValueListenableBuilder<double>(
+      valueListenable: _presBaromNotifier,
+      builder: (context, pressure, child) {
+        if (pressure == -1) {
+          return Center(
+            child: Text(
+              "No soportado",
+              style: TextStyle(
+                fontSize: 40,
+                color: Colors.red,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          );
+        }
+        return SfRadialGauge(
+          axes: <RadialAxis>[
+            RadialAxis(
+              startAngle: 140,
+              endAngle: 40,
+              minimum: 950,
+              maximum: 1050,
+              radiusFactor: 0.9,
+              majorTickStyle: const MajorTickStyle(
+                length: 12,
+                thickness: 2,
+                color: Colors.black,
+              ),
+              minorTicksPerInterval: 4,
+              minorTickStyle: const MinorTickStyle(
+                length: 6,
+                thickness: 1,
+                color: Colors.grey,
+              ),
+              axisLineStyle: const AxisLineStyle(
+                thickness: 12,
+                gradient: SweepGradient(
+                  colors: [Colors.blue, Colors.green, Colors.red],
+                  stops: [0.2, 0.6, 1],
+                ),
+              ),
+              axisLabelStyle: const GaugeTextStyle(
+                fontSize: 14,
+                color: Colors.black,
+              ),
+              pointers: <GaugePointer>[
+                NeedlePointer(
+                  value: pressure.clamp(950, 1050),
+                  enableAnimation: true,
+                  animationType: AnimationType.easeOutBack,
+                  needleColor: Colors.red,
+                  needleStartWidth: 1,
+                  needleEndWidth: 5,
+                  needleLength: 0.75,
+                  animationDuration: 2000,
+                  gradient: const LinearGradient(
+                    colors: [
+                      Colors.white,
+                      Colors.red,
+                    ],
+                  ),
+                  knobStyle: KnobStyle(
+                    color: Colors.transparent,
+                    borderColor: Colors.blue.withAlpha(100),
+                    borderWidth: 1,
+                  ),
+                ),
+              ],
+              annotations: [
+                GaugeAnnotation(
+                  widget: Column(
+                    children: [
+                      const SizedBox(height: 180),
+                      Text(
+                        "${pressure.toStringAsFixed(1)} hPa",
+                        style: TextStyle(
+                          fontSize: 50,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.teal,
+                          shadows: [
+                            Shadow(
+                              color: Colors.white,
+                              blurRadius: 20,
+                            ),
+                          ],
+                        ),
+                      ),
+                      const Text(
+                        "Presión Barométrica",
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ],
+                  ),
+                  angle: 90,
+                  positionFactor: 0.75,
+                )
+              ],
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   Widget buildVoltajeGauge() {
     return ValueListenableBuilder<double>(
       valueListenable: _voltajeNotifier,
@@ -1572,6 +1839,8 @@ class _SpeedometerPageState extends State<SpeedometerPage> {
                     'Velocidad',
                     'RPM',
                     'Carga del motor',
+                    'Presion Barometrica',
+                    'Tiempo de funcionamiento',
                     'Consumo instantáneo combustible',
                     'Posición acelerador',
                     'Presión colector admisión',

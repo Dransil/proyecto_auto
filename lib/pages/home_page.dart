@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:proyecto_auto/pages/actuadores_page.dart';
-import 'package:proyecto_auto/pages/dashboard/dashboard_page.dart';
 import 'package:proyecto_auto/pages/dashboard/home_dash.dart';
-import 'package:proyecto_auto/pages/graphs_page.dart';
+import 'package:proyecto_auto/pages/graphs/graphs_page.dart';
 import 'package:proyecto_auto/pages/infovin.dart';
 import 'package:proyecto_auto/pages/login_page.dart';
 
