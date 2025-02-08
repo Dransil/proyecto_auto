@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:proyecto_auto/pages/actuadores_page.dart';
 import 'package:proyecto_auto/pages/dashboard/home_dash.dart';
-import 'package:proyecto_auto/pages/graphs/graphs_page.dart';
+import 'package:proyecto_auto/pages/graphs/home_graphs.dart';
 import 'package:proyecto_auto/pages/infovin.dart';
 import 'package:proyecto_auto/pages/login_page.dart';
 
@@ -90,8 +90,7 @@ class _HomePageState extends State<HomePage> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                          builder: (context) => RealTimeLineChart()),
+                      MaterialPageRoute(builder: (context) => HomeGraphs()),
                     );
                   },
                 ),

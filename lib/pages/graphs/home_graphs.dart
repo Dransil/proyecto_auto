@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:proyecto_auto/pages/dashboard/dashComb_page.dart';
-import 'package:proyecto_auto/pages/dashboard/dashOx_page.dart';
-import 'package:proyecto_auto/pages/dashboard/dashboard_page.dart';
+import 'package:proyecto_auto/pages/graphs/graphcomb_page.dart';
+import 'package:proyecto_auto/pages/graphs/graphox_page.dart';
+import 'package:proyecto_auto/pages/graphs/graphs_page.dart';
 
 final Color colorPrimary = Color(0xFF007AFF); // Azul principal
 final Color colorSecondary = Color(0xFF1E90FF); // Azul más claro
 
-class HomeDash extends StatelessWidget {
+class HomeGraphs extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'SENSORES',
+          'GRÁFICOS',
           style: TextStyle(color: Colors.white),
         ),
         backgroundColor: colorPrimary,
@@ -32,12 +32,12 @@ class HomeDash extends StatelessWidget {
                   children: [
                     _HomeButton(
                       icon: Icons.settings,
-                      label: 'Sensores del motor',
+                      label: 'Gráficos del motor',
                       onTap: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => SpeedometerPage()),
+                              builder: (context) => RealTimeLineChart()),
                         );
                       },
                       width: buttonWidth,
@@ -46,12 +46,12 @@ class HomeDash extends StatelessWidget {
                     SizedBox(height: 16),
                     _HomeButton(
                       icon: Icons.air,
-                      label: 'Sensores de oxígeno',
+                      label: 'Gráficos de oxígeno',
                       onTap: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => DashboardOxPage()),
+                              builder: (context) => GraphoxPage()),
                         );
                       },
                       width: buttonWidth,
@@ -60,12 +60,12 @@ class HomeDash extends StatelessWidget {
                     SizedBox(height: 16),
                     _HomeButton(
                       icon: Icons.oil_barrel,
-                      label: 'Sensores de combustible',
+                      label: 'Gráficos de combustible',
                       onTap: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => DashboardCombPage()),
+                              builder: (context) => GraphcombPage()),
                         );
                       },
                       width: buttonWidth,
