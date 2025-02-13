@@ -48,25 +48,19 @@ class _RealTimeLineChartState extends State<RealTimeLineChart> {
     switch (selectedChart) {
       case '/Sensores/Voltaje':
         return 16; // Rango máximo para voltaje
-      case '/Sensores/RPM':
-        return 7000; // Rango máximo para RPM
       case '/Sensores/Carga del motor':
         return 100; // Rango máximo para carga del motor
       case '/Sensores/Consumo instantáneo combustible':
         return 50; // Rango máximo para consumo de combustible
-      case '/Sensores/Posición acelerador':
-        return 100; // Rango máximo para posición del acelerador
       case '/Sensores/Presión colector admisión':
         return 100; // Rango máximo para presión del colector de admisión
       case '/Sensores/Presión combustible':
         return 100; // Rango máximo para presión de combustible
-      case '/Sensores/Sensor MAP':
-        return 100; // Rango máximo para sensor MAP
       case '/Sensores/Temperatura aceite':
         return 120; // Rango máximo para temperatura del aceite
       case '/Sensores/Temperatura refrigerante':
         return 120; // Rango máximo para temperatura del refrigerante
-      case '/Sensores/Tiempo de encendido':
+      case '/Sensores/Tmp Funcionamiento':
         return 30; // Rango máximo para tiempo de encendido
       default:
         return 0.0;
@@ -78,25 +72,19 @@ class _RealTimeLineChartState extends State<RealTimeLineChart> {
     switch (selectedChart) {
       case '/Sensores/Voltaje':
         return 0; // Rango mínimo para voltaje
-      case '/Sensores/RPM':
-        return 0; // Rango mínimo para RPM
       case '/Sensores/Carga del motor':
         return 0; // Rango mínimo para carga del motor
       case '/Sensores/Consumo instantáneo combustible':
         return 0; // Rango mínimo para consumo de combustible
-      case '/Sensores/Posición acelerador':
-        return 0; // Rango mínimo para posición del acelerador
       case '/Sensores/Presión colector admisión':
         return 0; // Rango mínimo para presión del colector de admisión
       case '/Sensores/Presión combustible':
         return 0; // Rango mínimo para presión de combustible
-      case '/Sensores/Sensor MAP':
-        return 0; // Rango mínimo para sensor MAP
       case '/Sensores/Temperatura aceite':
         return 0; // Rango mínimo para temperatura del aceite
       case '/Sensores/Temperatura refrigerante':
         return 0; // Rango mínimo para temperatura del refrigerante
-      case '/Sensores/Tiempo de encendido':
+      case '/Sensores/Tmp Funcionamiento':
         return -10; // Rango mínimo para tiempo de encendido
       default:
         return 0.0;
@@ -148,16 +136,13 @@ class _RealTimeLineChartState extends State<RealTimeLineChart> {
                 value: selectedChart,
                 items: <String>[
                   '/Sensores/Voltaje',
-                  '/Sensores/RPM',
                   '/Sensores/Carga del motor',
                   '/Sensores/Consumo instantáneo combustible',
-                  '/Sensores/Posición acelerador',
                   '/Sensores/Presión colector admisión',
                   '/Sensores/Presión combustible',
-                  '/Sensores/Sensor MAP',
                   '/Sensores/Temperatura aceite',
                   '/Sensores/Temperatura refrigerante',
-                  '/Sensores/Tiempo de encendido',
+                  '/Sensores/Tmp Funcionamiento',
                 ]
                     .map((String value) => DropdownMenuItem<String>(
                           value: value,
@@ -222,23 +207,3 @@ class ChartData {
 
   ChartData(this.x, this.y);
 }
-// /Sensores/Vel vehículo -
-// /Sensores/RPM -
-// /Sensores/Carga del motor -
-// /Sensores/Consumo instantáneo combustible
-// /Sensores/Posición acelerador -
-// /Sensores/Presión colector admisión -
-// /Sensores/Presión combustible
-// /Sensores/Sensor MAP 
-// /Sensores/Temperatura aceite
-// /Sensores/Temperatura refrigerante -
-// /Sensores/Tiempo de encendido -
-
-// '/Sensores/Voltaje',
-// '/Sensores/RPM',
-// '/Sensores/Vel vehículo',
-// '/Sensores/Posición acelerador',
-// '/Sensores/Temperatura refrigerante',
-// '/Sensores/Presión colector admisión',
-// '/Sensores/Carga del motor',
-// '/Sensores/Tiempo de encendido',

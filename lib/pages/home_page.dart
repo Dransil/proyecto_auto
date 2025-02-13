@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:proyecto_auto/pages/actuadores_page.dart';
+import 'package:proyecto_auto/pages/actuadores/actuadores_page.dart';
 import 'package:proyecto_auto/pages/dashboard/home_dash.dart';
 import 'package:proyecto_auto/pages/graphs/home_graphs.dart';
 import 'package:proyecto_auto/pages/infovin.dart';
 import 'package:proyecto_auto/pages/login_page.dart';
+import 'package:proyecto_auto/pages/actuadores/actuadores_home.dart';
 
 final Color colorPrimary = Color(0xFF007AFF); // Azul principal
 final Color colorSecondary = Color(0xFF1E90FF); // Azul más claro
@@ -110,7 +111,7 @@ class _HomePageState extends State<HomePage> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => ActuadoresPage()),
+                      MaterialPageRoute(builder: (context) => HomeActuadores()),
                     );
                   },
                 ),

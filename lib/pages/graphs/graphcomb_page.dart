@@ -64,8 +64,6 @@ class _GraphcombPageState extends State<GraphcombPage> {
       return 10; // 10 bar o 145 PSI
     case '/SensoresCombustible/Tipo combustible':
       return 5; // Dependiendo de los tipos de combustible soportados
-    case '/SensoresCombustible/Voltaje':
-      return 14; // 14 V (sistema de 12 V)
     default:
       return 0.0;
   }
@@ -90,7 +88,6 @@ class _GraphcombPageState extends State<GraphcombPage> {
         return 0; // Rango mínimo para presión de combustible
       case '/SensoresCombustible/Tipo combustible':
         return 0; // Rango mínimo para sensor MAP
-      case '/SensoresCombustible/Voltaje':
       default:
         return 0.0;
     }
@@ -148,7 +145,6 @@ class _GraphcombPageState extends State<GraphcombPage> {
                   '/SensoresCombustible/Presion Riel combustible relativa',
                   '/SensoresCombustible/Presión de la bomba de combustible',
                   '/SensoresCombustible/Tipo combustible',
-                  '/SensoresCombustible/Voltaje',
                 ]
                     .map((String value) => DropdownMenuItem<String>(
                           value: value,
