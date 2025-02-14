@@ -13,7 +13,7 @@ final Color colorPrimary = Color(0xFF007AFF); // Azul principal
 class _RealTimeLineChartState extends State<RealTimeLineChart> {
   List<ChartData> chartData = [];
   late DatabaseReference _databaseRef;
-  String selectedChart = '/Sensores/Voltaje'; // Opción inicial seleccionada
+  String selectedChart = '/SensoresMotor/Voltaje'; // Opción inicial seleccionada
   StreamSubscription<DatabaseEvent>? _databaseSubscription; // Listener de Firebase
 
   @override
@@ -46,46 +46,70 @@ class _RealTimeLineChartState extends State<RealTimeLineChart> {
   // Método para obtener el rango máximo según la métrica seleccionada
   double _getYAxisMax() {
     switch (selectedChart) {
-      case '/Sensores/Voltaje':
-        return 16; // Rango máximo para voltaje
-      case '/Sensores/Carga del motor':
-        return 100; // Rango máximo para carga del motor
-      case '/Sensores/Consumo instantáneo combustible':
-        return 50; // Rango máximo para consumo de combustible
-      case '/Sensores/Presión colector admisión':
-        return 100; // Rango máximo para presión del colector de admisión
-      case '/Sensores/Presión combustible':
-        return 100; // Rango máximo para presión de combustible
-      case '/Sensores/Temperatura aceite':
-        return 120; // Rango máximo para temperatura del aceite
-      case '/Sensores/Temperatura refrigerante':
-        return 120; // Rango máximo para temperatura del refrigerante
-      case '/Sensores/Tmp Funcionamiento':
-        return 30; // Rango máximo para tiempo de encendido
+      case '/SensoresMotor/Voltaje':
+        return 16;
+      case '/SensoresMotor/Avance encendido':
+        return 15;
+      case '/SensoresMotor/Carga del motor':
+        return 100;
+      case '/SensoresMotor/Consumo instantáneo combustible':
+        return 50;
+      case '/SensoresMotor/Flujo aire masivo':
+        return 100;
+      case '/SensoresMotor/Presion barometrica':
+        return 20;
+      case '/SensoresMotor/Presión colector admisión':
+        return 100;
+      case '/SensoresMotor/Presión combustible':
+        return 100;
+      case '/SensoresMotor/RPM':
+        return 8000;
+      case '/SensoresMotor/Temperatura aceite':
+        return 120;
+      case '/SensoresMotor/Temperatura refrigerante':
+        return 120;
+      case '/SensoresMotor/Tmp Funcionamiento':
+        return 30;
+      case '/SensoresMotor/Valvula admision':
+        return 100;
+      case '/SensoresMotor/Velocidad':
+        return 200;
       default:
         return 0.0;
     }
   }
 
-  // Método para obtener el rango mínimo según la métrica seleccionada
+  // Método para obtener el rango mínimo
   double _getYAxisMin() {
     switch (selectedChart) {
-      case '/Sensores/Voltaje':
-        return 0; // Rango mínimo para voltaje
-      case '/Sensores/Carga del motor':
-        return 0; // Rango mínimo para carga del motor
-      case '/Sensores/Consumo instantáneo combustible':
-        return 0; // Rango mínimo para consumo de combustible
-      case '/Sensores/Presión colector admisión':
-        return 0; // Rango mínimo para presión del colector de admisión
-      case '/Sensores/Presión combustible':
-        return 0; // Rango mínimo para presión de combustible
-      case '/Sensores/Temperatura aceite':
-        return 0; // Rango mínimo para temperatura del aceite
-      case '/Sensores/Temperatura refrigerante':
-        return 0; // Rango mínimo para temperatura del refrigerante
-      case '/Sensores/Tmp Funcionamiento':
-        return -10; // Rango mínimo para tiempo de encendido
+      case '/SensoresMotor/Voltaje':
+        return 0;
+      case '/SensoresMotor/Avance encendido':
+        return 0;
+      case '/SensoresMotor/Carga del motor':
+        return 0;
+      case '/SensoresMotor/Consumo instantáneo combustible':
+        return 0;
+      case '/SensoresMotor/Flujo aire masivo':
+        return 0;
+      case '/SensoresMotor/Presion barometrica':
+        return 0;
+      case '/SensoresMotor/Presión colector admisión':
+        return 0;
+      case '/SensoresMotor/Presión combustible':
+        return 0;
+      case '/SensoresMotor/RPM':
+        return 0;
+      case '/SensoresMotor/Temperatura aceite':
+        return 0;
+      case '/SensoresMotor/Temperatura refrigerante':
+        return 0;
+      case '/SensoresMotor/Tmp Funcionamiento':
+        return -10;
+      case '/SensoresMotor/Valvula admision':
+        return 0;
+      case '/SensoresMotor/Velocidad':
+        return 0;
       default:
         return 0.0;
     }
@@ -135,18 +159,24 @@ class _RealTimeLineChartState extends State<RealTimeLineChart> {
               child: DropdownButton<String>(
                 value: selectedChart,
                 items: <String>[
-                  '/Sensores/Voltaje',
-                  '/Sensores/Carga del motor',
-                  '/Sensores/Consumo instantáneo combustible',
-                  '/Sensores/Presión colector admisión',
-                  '/Sensores/Presión combustible',
-                  '/Sensores/Temperatura aceite',
-                  '/Sensores/Temperatura refrigerante',
-                  '/Sensores/Tmp Funcionamiento',
+                  '/SensoresMotor/Voltaje',
+                  '/SensoresMotor/Avance encendido',
+                  '/SensoresMotor/Carga del motor',
+                  '/SensoresMotor/Consumo instantáneo combustible',
+                  '/SensoresMotor/Flujo aire masivo',
+                  '/SensoresMotor/Presion barometrica',                  
+                  '/SensoresMotor/Presión colector admisión',
+                  '/SensoresMotor/Presión combustible',
+                  '/SensoresMotor/RPM',                  
+                  '/SensoresMotor/Temperatura aceite',
+                  '/SensoresMotor/Temperatura refrigerante',
+                  '/SensoresMotor/Tmp Funcionamiento',
+                  '/SensoresMotor/Valvula admision',
+                  '/SensoresMotor/Velocidad',
                 ]
                     .map((String value) => DropdownMenuItem<String>(
                           value: value,
-                          child: Text(value.replaceAll('/Sensores/',
+                          child: Text(value.replaceAll('/SensoresMotor/',
                               '')), // Mostrar nombre sin "/Sensores/"
                         ))
                     .toList(),
@@ -179,7 +209,7 @@ class _RealTimeLineChartState extends State<RealTimeLineChart> {
                 ),
                 primaryYAxis: NumericAxis(
                   title: AxisTitle(
-                      text: selectedChart.replaceAll('/Sensores/', '')),
+                      text: selectedChart.replaceAll('/SensoresMotor/', '')),
                   minimum: _getYAxisMin(),
                   maximum: _getYAxisMax(),
                 ),
